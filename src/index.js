@@ -225,7 +225,7 @@ async function ejecutar() {
 
     } catch (error) {
         // Captura y manejo de errores durante la ejecución de pruebas y operaciones.
-        console.error(`Error en ejecutar:`, error)
+        console.error(`Error en ejecutar:`, error) 
     }
 }
 
