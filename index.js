@@ -1,193 +1,235 @@
 const fs = require('fs').promises
 const fs2 = require('fs')
-
-//Funcion para saber si existe un archivo creado en determianda ruta
-// async function archivoExiste(ruta) {
-//     try {
-//         await fs.access(ruta)
-//         return true
-//     } catch (error) {
-//         return false
-//     }
-// }
+const path = require('path')
 
 class ProductManager {
     constructor() {
-        this.path = './products.json'
-        this.archivoExiste2()
+        //Al utilizar el módulo path de Node.js junto con la variable global __dirname, creamos una ruta completa que es independiente del directorio en el que se encuentra el archivo 'products.json'.
+        this.path = path.join(__dirname, 'products.json')
+        this.archivoExiste()
     }
 
-    async archivoExiste2(){
-        let existe = fs2.existsSync(this.path)
-        if(!existe){
-            await fs.writeFile(this.path, '[]')
+    // Método para verificar si el archivo existe. si no, lo crea con un array vacío.
+    async archivoExiste() {
+        try {
+            // Verifica si el archivo existe.
+            const existe = fs2.existsSync(this.path)
+            if (!existe) {
+                // Si el archivo no existe, lo crea con un array vacío.
+                await fs.writeFile(this.path, '[]', 'utf-8')
+                console.log(`Archivo creado exitosamente en la ruta ${this.path}`)
+            }
+        } catch (error) {
+            // Captura y manejo de errores durante la creación del archivo.
+            console.error(`Hubo un error al crear el archivo ${this.path}. El error fue ${error}`)
         }
     }
 
-    // async getProducts() {
-    //     try {
-    //         let existe = await archivoExiste(this.path)
-    //         if (!existe) {
-    //             console.log(`El archivo no existe`)
-    //         } 
-    //         else {
-    //             try {
-    //                 let contenidoArchivo = await fs.readFile(this.path, 'utf-8')
-    //                 let contenidoArchivoParseado = JSON.parse(contenidoArchivo)
-    //                 console.log(contenidoArchivoParseado)
-    //                 return contenidoArchivoParseado
-    //             } 
-    //             catch (error) {
-    //                 console.log(`El contenido del archivo no es un JSON válido.`, error)
-    //                 await fs.writeFile(this.path, '[]')
-    //             }
-    //         }
-    //     } 
-    //     catch (error) {
-    //         console.log(`Error al abrir archivo:`, error)
-    //         await fs.writeFile(this.path, '[]')
-    //         console.log(`El archivo no existía o no contenía un JSON válido, pero fue creado exitosamente en la ruta '${this.path}'`)
-    //     }
-    // }
+    // Método para leer el contenido de un archivo JSON.
+    async leerArchivo(ruta) {
+        try {
+            // Lee y parsea el contenido del archivo JSON.
+            return JSON.parse(await fs.readFile(ruta, 'utf-8'))
+        } catch (error) {
+            // Captura y manejo de errores durante la lectura del archivo.
+            console.error(`Error al leer el archivo.`, error)
+        }
+    }
 
-    // async addProducts(title, description, price, thumbnail, code, stock) {
-    //     try {
-    //         if (!title || !description || !price || !thumbnail || !code || !stock) {
-    //             console.log(`Todos los datos son obligatorios!`)
-    //         } 
-    //         else {
-    //             let existe = await archivoExiste(this.path)
-    //             let products = existe ? JSON.parse(await fs.readFile(this.path, 'utf-8')) : []
+    // Método para escribir en un archivo JSON.
+    async escribirArchivo(ruta, contenido) {
+        try {
+            // Escribe el contenido en el archivo JSON.
+            await fs.writeFile(ruta, JSON.stringify(contenido), 'utf-8')
+        } catch (error) {
+            // Captura y manejo de errores durante la escritura en el archivo.
+            console.error(`Error al escribir en el archivo.`, error)
+        }
 
-    //             if (!products.some((product) => product.code === code)) {
+    }
 
-    //                 //La variable id comienza valiendo 1, y si existen productos, entonces toma el ultimo producto para saber el ultimo id e incrementarlo. Ya que ahora eliminamos productos y no sirve el length para tomar el tamaño de la lista de objetos.
-    //                 let id = 1
-    //                 if(products[0]){
-    //                     id = products[products.length-1].id + 1 
-    //                 }            
+    // Método para obtener todos los productos.
+    async getProducts() {
+        try {
+            // Obtiene y muestra por consola todos los productos.
+            let productos = await this.leerArchivo(this.path)
+            //Descomentar la siguiente línea en caso de que quiera ver los productos cada vez que se invoque el método getProducts()
+            //console.log(productos)
+            return productos
+        }
+        catch (error) {
+            // Captura y manejo de errores durante la obtención de productos.
+            console.error(`Error al obtener los productos.`, error)
+        }
+    }
 
-    //                 let newProduct = { title, description, price, thumbnail, code, stock, id }
-    //                 products.push(newProduct)
-    //                 await fs.writeFile(this.path, JSON.stringify(products))
-    //                 console.log(`El libro ${title} ha sido agregado correctamente`)
-    //             } else {
-    //                 console.log(`El código ${code} ya existe`)
-    //             }
-    //         }
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }
+    // Método para agregar un nuevo producto.
+    async addProducts(title, description, price, thumbnail, code, stock) {
+        try {
+            // Verifica si algún campo requerido está vacío.
+            if (!title || !description || !price || !thumbnail || !code || !stock) {
+                console.log(`El producto que intenta agregar no tiene todos los campos!`)
+            } else {
+                // Obtiene productos existentes.
+                let products = await this.leerArchivo(this.path)
 
-    // async getProductById(id) {
-    //     try {
-    //         let productos = await fs.readFile(this.path, 'utf-8')
-    //         productos = JSON.parse(productos)
+                // Verifica si el código del producto ya existe.
+                if (!products.some((product) => product.code === code)) {
+                    // Genera un nuevo ID basado en el último producto existente.
+                    const id = products.length ? products[products.length - 1].id + 1 : 1
+                    let newProduct = { title, description, price, thumbnail, code, stock, id }
 
-    //         let busquedaPorId = productos.find((prod) => prod.id === id)
-            
-    //         if(busquedaPorId){
-    //             console.log(busquedaPorId)
-    //         }
-    //         else{
-    //             console.log(`El producto con el id: ${id} no se ha encontrado.`)
-    //         }            
-    //     } 
-    //     catch (error) {
-    //         console.log(error)
-    //     }
-    // }
+                    // Agrega el nuevo producto y actualiza el archivo.
+                    products.push(newProduct)
+                    await this.escribirArchivo(this.path, products)
+                    console.log(`El libro ${title} ha sido agregado correctamente`)
 
-    // async updateProduct(id, camposActualizados ) {
-    //     try {
-    //         let productos = await fs.readFile(this.path, 'utf-8')
-    //         productos = JSON.parse(productos)
+                } else {
+                    console.log(`El código ${code} ya existe`)
+                }
+            }
+        } catch (error) {
+            // Captura y manejo de errores durante la adición de productos.
+            console.error(`Error al agregar un producto.`, error)
+        }
+    }
 
-    //         //Uso findIndex para saber la posición del producto buscado, si devuelve -1 no existe
-    //         let productoIndex = productos.findIndex((prod) => prod.id === id)
+    // Método para obtener un producto por su ID.
+    async getProductById(id) {
+        try {
+            // Obtiene productos y busca un producto por ID.
+            let productos = await this.leerArchivo(this.path)
+            let busquedaPorId = productos.find((prod) => prod.id === id)
 
-    //         if(productoIndex != -1){
-    //             let productoModificado = {...productos[productoIndex]}
-    //             Object.assign(productoModificado, camposActualizados)
-    //             productos[productoIndex] = productoModificado
-    //             await fs.writeFile(this.path, JSON.stringify(productos))
-    //         }       
-    //         else{
-    //             console.log(`El producto con id: ${id} no ha sido encontrado`)
-    //         }
-    //     }
-    //     catch (error) {
-    //         console.log(error)
-    //     }
-    // }
+            if (busquedaPorId) {
+                console.log(busquedaPorId)
+            } else {
+                console.log(`El producto con el id: ${id} no se ha encontrado.`)
+            }
+        }
+        catch (error) {
+            // Captura y manejo de errores durante la obtención de un producto por ID.
+            console.error(`Error al obtener el producto por ID.`, error)
+        }
+    }
 
-    // async deleteProduct(id) {
-    //     try {
-    //         let productos = await fs.readFile(this.path, 'utf-8')
-    //         productos = JSON.parse(productos)
-    //         let productosReducido = productos.filter((prod) => prod.id !== id)
-    //         await fs.writeFile(this.path, JSON.stringify(productosReducido))       
-    //     }
+    // Método para actualizar los campos de un producto por su ID.
+    async updateProduct(id, camposActualizados) {
+        try {
+            // Obtener la lista actual de productos.
+            let productos = await this.leerArchivo(this.path)
 
-    //     catch (error) {
-    //         console.log(error)
-    //     }
-    // }
+            //Uso findIndex para saber la posición del producto buscado, si devuelve -1 no existe
+            let productoIndex = productos.findIndex((prod) => prod.id === id)
+
+            if (productoIndex !== -1) {
+                // Copiar el producto encontrado para realizar modificaciones.
+                let productoModificado = { ...productos[productoIndex] }
+
+                // Actualizar los campos del producto con los proporcionados.
+                Object.assign(productoModificado, camposActualizados)
+
+                // Mostrar el producto modificado en la consola.
+                console.log(`El producto con id ${id} ha sido actualizado. `)
+                console.log(productoModificado)
+
+                // Reemplazar el producto original con el modificado en la lista de productos.
+                productos[productoIndex] = productoModificado
+
+                // Escribir la lista actualizada de productos en el archivo.
+                await this.escribirArchivo(this.path, productos)
+            } else {
+                console.log(`El producto con id: ${id} no ha sido encontrado`)
+            }
+        }
+        catch (error) {
+            // Captura y manejo de errores durante la actualización del producto.
+            console.error(`Error al actualizar el producto.`, error)
+        }
+    }
+
+    // Método para eliminar un producto por su ID.
+    async deleteProduct(id) {
+        try {
+            // Obtener la lista actual de productos.
+            let productos = await this.leerArchivo(this.path)
+
+            // Filtrar los productos para excluir el que tiene el ID proporcionado.
+            let productosReducido = productos.filter((prod) => prod.id !== id)
+
+            // Mostrar un mensaje indicando que el producto ha sido eliminado o no se encontraba en la base de datos.
+            console.log(`El producto con id ${id} ha sido eliminado o ya no se encontraba en la base de datos.`)
+
+            // Escribir la lista actualizada de productos en el archivo.
+            await this.escribirArchivo(this.path, productosReducido)
+        }
+        catch (error) {
+            // Captura y manejo de errores durante la eliminación del producto.
+            console.error(`Error al eliminar el producto.`, error)
+        }
+    }
 }
 
+// Función que realiza pruebas y operaciones con la clase ProductManager.
 async function ejecutar() {
+    // Instancia de la clase ProductManager para gestionar productos.
     const productos = new ProductManager()
 
-    //Preguntar por todos los productos agregados
-    console.log(`\nPrueba de todos los productos agregados`)
-    await productos.getProducts()
+    try {
+        //Preguntar por todos los productos agregados
+        console.log(`\nLos productos ya agregados son:`)
+        await productos.getProducts()
 
-    //Agregar productos a la class
-    console.log(`\nAgregando los libros`)
-    await productos.addProducts('OMA 1', 'Problemas de olimpiadas nivel 1', '$4000', 'OMA1.jpg', 1234, 3)
-    await productos.addProducts('OMA 2', 'Problemas de olimpiadas nivel 2', '$4000', 'OMA2.jpg', 1235, 3)
-    await productos.addProducts('OMA 3', 'Problemas de olimpiadas nivel 3', '$4000', 'OMA3.jpg', 1236, 3)
+        //Agregar productos a la class
+        console.log(`\nAgregando los libros:`)
+        await productos.addProducts('OMA 1', 'Problemas de olimpiadas nivel 1', '$4000', 'OMA1.jpg', 1234, 10)
+        await productos.addProducts('OMA 2', 'Problemas de olimpiadas nivel 2', '$5000', 'OMA2.jpg', 1235, 15)
+        await productos.addProducts('OMA 3', 'Problemas de olimpiadas nivel 3', '$6000', 'OMA3.jpg', 1236, 20)
+        await productos.addProducts('OMA 4', 'Problemas de olimpiadas nivel 4', '$7000', 'OMA4.jpg', 1237, 25)
+        await productos.addProducts('OMA 5', 'Problemas de olimpiadas nivel 5', '$8000', 'OMA5.jpg', 1238, 30)
+        await productos.addProducts('OMA 6', 'Problemas de olimpiadas nivel 6', '$9000', 'OMA6.jpg', 1239, 40)
 
-    //Validar todos los campos son oblicatorios
-    console.log(`\nPrueba de todos los campos son obligatorios`)
-    await productos.addProducts('OMA 3', 'Problemas de olimpiadas nivel 3', 'OMA3.jpg', 1236, 3)
+        //Validar todos los campos son oblicatorios
+        console.log(`\nPrueba de todos los campos son obligatorios`)
+        await productos.addProducts('OMA 3', 'Problemas de olimpiadas nivel 3', 'OMA3.jpg', 1236, 3)
 
-    //Preguntar por todos los productos agregados
-    console.log(`\nPrueba de todos los productos agregados`)
-    await productos.getProducts()
+        //Validar si el código ya existe
+        console.log(`\nPrueba de código identificador repetido`)
+        await productos.addProducts('OMA 7', 'Problemas de olimpiadas nivel 7', '$9000', 'OMA7.jpg', 1237, 45)
 
-    //Preguntar por un producto según su id
-    console.log(`\nPrueba de buscar un producto según su id`)
-    await productos.getProductById(2)
-    await productos.getProductById(4)
+        //Preguntar por todos los productos agregados
+        console.log(`\nPrueba de todos los productos agregados`)
+        await productos.getProducts()
 
-    //Preguntar por un producto según su id
-    console.log(`\nEliminar un producto según su id`)
-    await productos.deleteProduct(1)
-    await productos.deleteProduct(2)
+        //Preguntar por un producto según su id
+        console.log(`\nPrueba de buscar un producto según su id`)
+        await productos.getProductById(2)
+        await productos.getProductById(4)
 
-    //Preguntar por todos los productos agregados
-    console.log(`\nPrueba de todos los productos agregados`)
-    await productos.getProducts()
+        //Eliminar un producto según su id
+        console.log(`\nEliminar un producto según su id`)
+        await productos.deleteProduct(1)
+        await productos.deleteProduct(2)
 
-    //Modificar los campos de un producto
-    console.log(`\nPrueba de modificación de un producto`)
-    await productos.updateProduct(5, { "price": "$50000", "stock": 150 } )
+        //Preguntar por todos los productos agregados
+        console.log(`\nPrueba de todos los productos agregados`)
+        await productos.getProducts()
 
-    //Preguntar por todos los productos agregados
-    console.log(`\nPrueba de todos los productos agregados`)
-    await productos.getProducts()
+        //Modificar los campos de un producto
+        console.log(`\nPrueba de modificación de un producto`)
+        await productos.updateProduct(5, { "price": "$50000", "stock": 150 })
 
+        //Preguntar por todos los productos agregados
+        console.log(`\nPrueba de todos los productos agregados`)
+        await productos.getProducts()
+
+    } catch (error) {
+        // Captura y manejo de errores durante la ejecución de pruebas y operaciones.
+        console.error(`Error en ejecutar:`, error)
+    }
 }
 
-// ejecutar()
+//ejecutar()
 
-//Luego de la primer ejecución se espera en el archivo creado products.json:
-//[{"title":"OMA 3","description":"Problemas de olimpiadas nivel 3","price":"$4000","thumbnail":"OMA3.jpg","code":1236,"stock":3,"id":3}] 
-
-//Luego de la segunda ejecución se espera en el archivo creado products.json:
-//[{"title":"OMA 3","description":"Problemas de olimpiadas nivel 3","price":"$4000","thumbnail":"OMA3.jpg","code":1236,"stock":3,"id":3},{"title":"OMA 1","description":"Problemas de olimpiadas nivel 1","price":"$4000","thumbnail":"OMA1.jpg","code":1234,"stock":3,"id":4},{"title":"OMA 2","description":"Problemas de olimpiadas nivel 2","price":"$50000","thumbnail":"OMA2.jpg","code":1235,"stock":150,"id":5}]
-
-
-module.exports = ProductManager
+// Exportación de la clase ProductManager y la función ejecutar para su uso en otros módulos.
+module.exports = { ProductManager, ejecutar }
