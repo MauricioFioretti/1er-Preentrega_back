@@ -5,7 +5,7 @@ const path = require('path')
 class ProductManager {
     constructor() {
         //Al utilizar el módulo path de Node.js junto con la variable global __dirname, creamos una ruta completa que es independiente del directorio en el que se encuentra el archivo 'products.json'.
-        this.path = path.join(__dirname, 'products.json')
+        this.path = path.join(__dirname, '../data/products.json')
         this.archivoExiste()
     }
 

@@ -10,7 +10,7 @@ const { ProductManager, ejecutar } = require('./index.js')
 // Crear una instancia de ProductManager
 const products = new ProductManager()
 
-//Descomentar la función ejecutar() en caso que el archivo products.json no esté creado, aplicar el comando 'node app.js' 2 veces y luego volver a comentar la función.
+//Descomentar la función ejecutar() en caso que el archivo products.json no esté creado en la carpeta data, aplicar el comando 'npm run crear' 2 veces y luego volver a comentar la función.
 //ejecutar()
 
 // Ruta raíz, responde con un mensaje simple
@@ -43,18 +43,18 @@ app.get("/products", async (req, res) => {
 })
 
 // Ruta para obtener un producto por su ID
-app.get("/products/:id", async (req, res) => {
+app.get("/products/:pid", async (req, res) => { 
     try {
         // Obtener productos desde la clase creada en index.js
         let prod = await products.getProducts()
 
         //Capturar id de params y buscar índice del producto según su id
-        let id = req.params.id
-        let productoIndex = prod.findIndex((pr) => pr.id.toString() === id)
+        let pid = req.params.pid
+        let productoIndex = prod.findIndex((pr) => pr.id.toString() === pid)
 
         if (productoIndex === -1) {
             // Enviar respuesta de error si el producto no se encuentra
-            res.status(404).json({ error: `El producto con id ${id} no fue encontrado.` })
+            res.status(404).json({ error: `El producto con id ${pid} no fue encontrado.` })
         } else {
             res.json({ message: 'Producto encontrado correctamente', data: prod[productoIndex] })
         }
@@ -70,3 +70,5 @@ app.get("/products/:id", async (req, res) => {
 app.listen(8080, () => {
     console.log('Servidor escuchando', 8080)
 })
+
+//Para poner en marcha el srvidor, escribir el comando 'npm start' o 'npm run start'
