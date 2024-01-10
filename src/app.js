@@ -71,4 +71,4 @@ app.listen(8080, () => {
     console.log('Servidor escuchando', 8080)
 })
 
-//Para poner en marcha el srvidor, escribir el comando 'npm start' o 'npm run start'
+//Para poner en marcha el servidor, escribir el comando 'npm start' o 'npm run start'
