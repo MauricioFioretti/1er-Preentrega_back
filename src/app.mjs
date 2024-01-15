@@ -1,8 +1,10 @@
 import express, { urlencoded } from 'express'
+import routerProd    from '../src/routes/products.routes.js'
 
 // Crear una instancia de Express 
 const app = express()
 app.use(urlencoded({ extended: true }))
+app.use('/api/products', routerProd)
 app.use(express.json())
 
 // Importar la clase ProductManager desde el módulo index.js
@@ -22,17 +24,19 @@ app.get("/", (req, res) => {
 app.get("/products", async (req, res) => {
     try {
         // Obtener productos desde la clase creada en index.js 
-        let prod = await products.getProducts()
-        let cantidad = parseInt(req.query.limit)
+        let productos = await products.getProducts()
+        let limit = parseInt(req.query.limit)
 
-        if (!isNaN(cantidad) && cantidad > 0) {
-            // Reducir el array de productos según la cantidad especificada
-            let arrayReducido = [...prod]
-            arrayReducido.splice(cantidad, prod.length - cantidad)
-            res.json({ message: 'Productos obtenidos correctamente', data: arrayReducido })
+        //corregir el poner 2fkjscdbc y que se muestren 2 productos
+        if (!isNaN(limit) && limit > 0) {
+            // Reducir el array de productos según el limit especificado
+            let arrayReducido = [...productos]
+            arrayReducido.splice(limit, productos.length - limit)
+            //let arrayReducido = productos.slice(0, limit)
+            res.status(200).json({ message: 'Productos obtenidos correctamente', data: arrayReducido })
         }
         else {
-            res.json({ message: 'Productos obtenidos correctamente', data: prod })
+            res.status(200).json({ message: 'Productos obtenidos correctamente', data: productos })
         }
     }
     catch (error) {
@@ -48,7 +52,7 @@ app.get("/products/:pid", async (req, res) => {
         //Capturar id de params y buscar índice del producto según su id
         let pid = parseInt(req.params.pid)
         let productoId = await products.getProductById(pid)
-        res.json({message: productoId})
+        res.json(productoId)
     }
     catch (error) {
         // Manejar errores y enviar respuesta de error al cliente
@@ -58,12 +62,14 @@ app.get("/products/:pid", async (req, res) => {
 })
 
 // Ruta para agregar productos 
+
+//Arreglar bug de que no podes agregar otro libro con el mismo nombre, imagen o codigo
 app.post("/saveProducts", async (req, res) => {
     let solicitud = req.body
     try {
         // Agregar productos usando el metodo addProducts()
-        let prod = await products.addProducts(...Object.values(solicitud))
-        res.json({message: prod})
+        let prod = await products.addProducts(solicitud)
+        res.status(201).json({message: prod})
     }
     catch (error) {
         // Manejar errores y enviar respuesta de error al cliente
@@ -74,12 +80,18 @@ app.post("/saveProducts", async (req, res) => {
 
 // Ruta para actualizar productos 
 app.put("/updateProducts", async (req, res) => {
-    let solicitud = req.body
-    let id = solicitud.id
-    delete solicitud.id
+    // let solicitud = req.body
+    // let id = solicitud.id
+    // delete solicitud.id
+
+    //Arreglar bug de actulizacion a donde le cambio el codigo a un producto que no es el correspondiente
+    //No pueden quedar 2 libros con el mismo codigo, titulo o imagen
+
+    let {id} = req.body
+
     try {
         // Agregar productos usando el metodo addProducts()
-        let prod = await products.updateProduct(id, solicitud)
+        let prod = await products.updateProduct(id, req.body)
         res.json({ message: prod })
     }
     catch (error) {

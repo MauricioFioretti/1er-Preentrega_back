@@ -57,10 +57,10 @@ export class ProductManager {
     async getProducts() {
         try {
             // Obtiene y muestra por consola todos los productos.
-            let productos = await this.leerArchivo(this.path)
-            //Descomentar la siguiente línea en caso de que quiera ver los productos cada vez que se invoque el método getProducts()
-            //console.log(productos)
-            return productos
+            let products = await this.leerArchivo(this.path)
+            //Descomentar la siguiente línea en caso de que quiera ver los products cada vez que se invoque el método getProducts()
+            //console.log(products)
+            return products
         }
         catch (error) {
             // Captura y manejo de errores durante la obtención de productos.
@@ -70,10 +70,10 @@ export class ProductManager {
     }
 
     // Método para agregar un nuevo producto.
-    async addProducts(title, description, price, thumbnail, code, stock) {
+    async addProducts(newProduct) {
         try {
             // Verifica si algún campo requerido está vacío.
-            if (!title || !description || !price || !thumbnail || !code || !stock) {
+            if (!newProduct.title || !newProduct.description || !newProduct.price || !newProduct.thumbnail || !newProduct.code || !newProduct.stock) {
                 //console.log(`El producto que intenta agregar no tiene todos los campos!`)
                 return `El producto que intenta agregar no tiene todos los campos!`
             } else {
@@ -81,20 +81,20 @@ export class ProductManager {
                 let products = await this.leerArchivo(this.path)
 
                 // Verifica si el código del producto ya existe.
-                if (!products.some((product) => product.code === code)) {
+                if (!products.some((prod) => prod.code === newProduct.code)) {
+
                     // Genera un nuevo ID basado en el último producto existente.
-                    const id = products.length ? products[products.length - 1].id + 1 : 1
-                    let newProduct = { title, description, price, thumbnail, code, stock, id }
+                    newProduct.id = products.length ? products[products.length - 1].id + 1 : 1
 
                     // Agrega el nuevo producto y actualiza el archivo.
                     products.push(newProduct)
                     await this.escribirArchivo(this.path, products)
                     //console.log(`El libro ${title} ha sido agregado correctamente`)
-                    return `El libro ${title} ha sido agregado correctamente`
+                    return `El libro ${newProduct.title} ha sido agregado correctamente`
 
                 } else {
                     //console.log(`El código ${code} ya existe`)
-                    return `El código ${code} ya existe`
+                    return `El código ${newProduct.code} ya existe`
                 }
             }
         } catch (error) {
@@ -108,21 +108,21 @@ export class ProductManager {
     async getProductById(id) {
         try {
             // Obtiene productos y busca un producto por ID.
-            let productos = await this.leerArchivo(this.path)
-            let busquedaPorId = productos.find((prod) => prod.id === id)
+            let products = await this.leerArchivo(this.path)
+            let busquedaPorId = products.find((prod) => prod.id === id)
 
             if (busquedaPorId) {
                 //console.log(busquedaPorId)
-                return `El producto con el id: ${id} se ha encontrado correctamente.`
+                return busquedaPorId
             } else {
                 //console.log(`El producto con el id: ${id} no se ha encontrado.`)
-                return `El producto con el id: ${id} no se ha encontrado.`
+                return false
             }
         }
         catch (error) {
             // Captura y manejo de errores durante la obtención de un producto por ID.
             //console.error(`Error al obtener el producto por ID.`, error)
-            return `Error al obtener el producto por ID.`, error
+            return {messaje: `Error al obtener el producto por ID.`, error: error}
         }
     }
 
@@ -130,27 +130,27 @@ export class ProductManager {
     async updateProduct(id, camposActualizados) {
         try {
             // Obtener la lista actual de productos.
-            let productos = await this.leerArchivo(this.path)
+            let products = await this.leerArchivo(this.path)
 
             //Uso findIndex para saber la posición del producto buscado, si devuelve -1 no existe
-            let productoIndex = productos.findIndex((prod) => prod.id === id)
+            let productoIndex = products.findIndex((prod) => prod.id === id)
 
             if (productoIndex !== -1) {
                 // Copiar el producto encontrado para realizar modificaciones.
-                let productoModificado = { ...productos[productoIndex] }
+                let productoAModificar = { ...products[productoIndex] }
 
                 // Actualizar los campos del producto con los proporcionados.
-                Object.assign(productoModificado, camposActualizados)
+                Object.assign(productoAModificar, camposActualizados)
 
                 // Mostrar el producto modificado en la consola.
                 //console.log(`El producto con id ${id} ha sido actualizado. `)
-                //console.log(productoModificado)
+                //console.log(productoAModificar)
 
-                // Reemplazar el producto original con el modificado en la lista de productos.
-                productos[productoIndex] = productoModificado
+                // Reemplazar el producto original con el modificado en la lista de products.
+                products[productoIndex] = productoAModificar
 
-                // Escribir la lista actualizada de productos en el archivo.
-                await this.escribirArchivo(this.path, productos)
+                // Escribir la lista actualizada de products en el archivo.
+                await this.escribirArchivo(this.path, products)
 
                 return `El producto con id ${id} ha sido actualizado.`
             } else {
@@ -174,7 +174,7 @@ export class ProductManager {
             // Buscar el producto a eliminar y guardar la respuesta del método
             const respuesta = await this.getProductById(id)
 
-            if (respuesta === `El producto con el id: ${id} se ha encontrado correctamente.`) {
+            if (respuesta) {
                 // Filtrar los productos para excluir el que tiene el ID proporcionado.
                 let productosReducido = productos.filter((prod) => prod.id !== id)
 
