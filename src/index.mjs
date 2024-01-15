@@ -58,11 +58,11 @@ export class ProductManager {
         try {
             // Obtiene y muestra por consola todos los productos.
             let products = await this.leerArchivo(this.path)
-            return products
+            return { success: true, message: "Productos obtenidos correctamente", data: products }
         }
         catch (error) {
             // Captura y manejo de errores durante la obtención de productos.
-            return `Error al obtener los productos.`, error
+            return { success: false, message: `Error al obtener los productos.`, error: error.message }
         }
     }
 
@@ -71,29 +71,39 @@ export class ProductManager {
         try {
             // Verifica si algún campo requerido está vacío.
             if (!newProduct.title || !newProduct.description || !newProduct.price || !newProduct.thumbnail || !newProduct.code || !newProduct.stock) {
-                return `El producto que intenta agregar no tiene todos los campos!`
-            } else {
-                // Obtiene productos existentes.
-                let products = await this.leerArchivo(this.path)
-
-                // Verifica si el código del producto ya existe.
-                if (!products.some((prod) => prod.code === newProduct.code)) {
-
-                    // Genera un nuevo ID basado en el último producto existente.
-                    newProduct.id = products.length ? products[products.length - 1].id + 1 : 1
-
-                    // Agrega el nuevo producto y actualiza el archivo.
-                    products.push(newProduct)
-                    await this.escribirArchivo(this.path, products)
-                    return `El libro ${newProduct.title} ha sido agregado correctamente`
-
-                } else {
-                    return `El código ${newProduct.code} ya existe`
-                }
+                throw new Error('El producto que intenta agregar no tiene todos los campos')
             }
-        } catch (error) {
+            // Obtiene productos existentes.
+            let products = await this.leerArchivo(this.path)
+
+            // Verifica si el código del producto ya existe.
+            if (products.some((prod) => prod.code === newProduct.code)) {
+                throw new Error(`El código ${newProduct.code} ya existe`)
+            }
+
+            // Verifica si el título del producto ya existe.
+            if (products.some((prod) => prod.title === newProduct.title)) {
+                throw new Error(`El título ${newProduct.title} ya existe`)
+            }
+
+            // Verifica si el imagen del producto ya existe.
+            if (products.some((prod) => prod.thumbnail === newProduct.thumbnail)) {
+                throw new Error(`La imágen del producto '${newProduct.thumbnail}' ya existe`)
+            }
+
+            // Genera un nuevo ID basado en el último producto existente.
+            newProduct.id = products.length ? products[products.length - 1].id + 1 : 1
+
+            // Agrega el nuevo producto y actualiza el archivo.
+            products.push(newProduct)
+            await this.escribirArchivo(this.path, products)
+
+            // Devuelve un objeto que indica el éxito.
+            return { success: true, message: `El producto ${newProduct.title} ha sido agregado correctamente`, data: newProduct }
+        }
+        catch (error) {
             // Captura y manejo de errores durante la adición de productos.
-            return `Error al agregar un producto.`, error
+            return { success: false, message: `Error al agregar el producto`, error: error.message }
         }
     }
 
@@ -105,14 +115,14 @@ export class ProductManager {
             let busquedaPorId = products.find((prod) => prod.id === id)
 
             if (busquedaPorId) {
-                return busquedaPorId
+                return { success: true, message: `El producto con id ${id} se encontró exitosamente.`, data: busquedaPorId }
             } else {
-                return false
+                throw new Error(`El producto con id ${id} no ha sido encontrado.`)
             }
         }
         catch (error) {
             // Captura y manejo de errores durante la obtención de un producto por ID.
-            return {messaje: `Error al obtener el producto por ID.`, error: error}
+            return { success: false, message: `Error al obtener el producto por ID.`, error: error.message }
         }
     }
 
@@ -126,6 +136,22 @@ export class ProductManager {
             let productoIndex = products.findIndex((prod) => prod.id === id)
 
             if (productoIndex !== -1) {
+                delete camposActualizados.id
+                delete camposActualizados.code
+
+                let reducidos = products.filter((prod) => prod.id !== id)
+                console.log(reducidos)
+
+                // Verifica si el título del producto ya existe.
+                if (reducidos.some((prod) => prod.title === camposActualizados.title)) {
+                    throw new Error(`El título ${camposActualizados.title} ya existe y no puede haber 2 libros con el mismo nombre.`)
+                }
+
+                // Verifica si el imagen del producto ya existe.
+                if (reducidos.some((prod) => prod.thumbnail === camposActualizados.thumbnail)) {
+                    throw new Error(`La imágen del producto '${camposActualizados.thumbnail}' ya existe y no puede haber 2 libros con la misma imágen.`)
+                }
+
                 // Copiar el producto encontrado para realizar modificaciones.
                 let productoAModificar = { ...products[productoIndex] }
 
@@ -138,14 +164,14 @@ export class ProductManager {
                 // Escribir la lista actualizada de products en el archivo.
                 await this.escribirArchivo(this.path, products)
 
-                return `El producto con id ${id} ha sido actualizado.`
+                return { success: true, message: `El producto con id ${id} ha sido actualizado.`, data: productoAModificar }
             } else {
-                return `El producto con id: ${id} no ha sido encontrado`
+                throw new Error(`El producto con id: ${id} no ha sido encontrado`)
             }
         }
         catch (error) {
             // Captura y manejo de errores durante la actualización del producto.
-            return `Error al actualizar el producto.`, error
+            return { success: false, message: "Error al actualizar el producto.", error: error.message }
         }
     }
 
@@ -158,20 +184,20 @@ export class ProductManager {
             // Buscar el producto a eliminar y guardar la respuesta del método
             const respuesta = await this.getProductById(id)
 
-            if (respuesta) {
+            if (respuesta.success) {
                 // Filtrar los productos para excluir el que tiene el ID proporcionado.
                 let productosReducido = productos.filter((prod) => prod.id !== id)
 
                 // Escribir la lista actualizada de productos en el archivo.
                 await this.escribirArchivo(this.path, productosReducido)
-                return `El producto con id ${id} ha sido eliminado correctamente de la base de datos.`
+                return { success: true, message: `El producto con id ${id} ha sido eliminado correctamente de la base de datos.`, data: productosReducido }
             } else {
-                return `El producto con id ${id} no se eliminó, ya que no se encuentra en la base de datos.`
+                throw new Error(`El producto con id ${id} no se eliminó ya que no se encuentra en la base de datos.`)
             }
         }
         catch (error) {
             // Captura y manejo de errores durante la eliminación del producto.
-            return `Error al eliminar el producto.`, error
+            return { success: false, message: `Error al eliminar el producto.`, error: error.message }
         }
     }
 }
