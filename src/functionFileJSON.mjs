@@ -1,4 +1,4 @@
-import {ProductManager} from './index.mjs'
+import { ProductManager } from './index.mjs'
 
 // Función autoinvocada asincrónica para ejecutar pruebas y operaciones con la clase ProductManager.
 (async function ejecutar() {
@@ -11,20 +11,22 @@ import {ProductManager} from './index.mjs'
 
     //Agregar productos a la class
     console.log(`\nAgregando los libros:`)
-    await productos.addProducts('OMA 1', 'Problemas de olimpiadas nivel 1', '$4000', 'OMA1.jpg', 1234, 10)
-    await productos.addProducts('OMA 2', 'Problemas de olimpiadas nivel 2', '$5000', 'OMA2.jpg', 1235, 15)
-    await productos.addProducts('OMA 3', 'Problemas de olimpiadas nivel 3', '$6000', 'OMA3.jpg', 1236, 20)
-    await productos.addProducts('OMA 4', 'Problemas de olimpiadas nivel 4', '$7000', 'OMA4.jpg', 1237, 25)
-    await productos.addProducts('OMA 5', 'Problemas de olimpiadas nivel 5', '$8000', 'OMA5.jpg', 1238, 30)
-    await productos.addProducts('OMA 6', 'Problemas de olimpiadas nivel 6', '$9000', 'OMA6.jpg', 1239, 40)
+
+    await productos.addProducts({title:'OMA 1', description:'Problemas de olimpiadas nivel 1', price:'$4000', thumbnail: 'OMA1.jpg',code: 1234,stock: 10})
+    await productos.addProducts({title:'OMA 2', description:'Problemas de olimpiadas nivel 2', price:'$4000', thumbnail: 'OMA2.jpg',code: 1235,stock: 10})
+    await productos.addProducts({title:'OMA 3', description:'Problemas de olimpiadas nivel 3', price:'$4000', thumbnail: 'OMA3.jpg',code: 1236,stock: 10})
+    await productos.addProducts({title:'OMA 4', description:'Problemas de olimpiadas nivel 4', price:'$4000', thumbnail: 'OMA4.jpg',code: 1237,stock: 10})
+    await productos.addProducts({title:'OMA 5', description:'Problemas de olimpiadas nivel 5', price:'$4000', thumbnail: 'OMA5.jpg',code: 1238,stock: 10})
+    await productos.addProducts({title:'OMA 6', description:'Problemas de olimpiadas nivel 6', price:'$4000', thumbnail: 'OMA6.jpg',code: 1239,stock: 10})
+
 
     //Validar todos los campos son oblicatorios
     console.log(`\nPrueba de todos los campos son obligatorios`)
-    await productos.addProducts('OMA 3', 'Problemas de olimpiadas nivel 3', 'OMA3.jpg', 1236, 3)
+    await productos.addProducts({title:'OMA 3', description:'Problemas de olimpiadas nivel 3', thumbnail: 'OMA3.jpg', code: 1236, stock: 10})
 
     //Validar si el código ya existe
     console.log(`\nPrueba de código identificador repetido`)
-    await productos.addProducts('OMA 7', 'Problemas de olimpiadas nivel 7', '$9000', 'OMA7.jpg', 1237, 45)
+    await productos.addProducts({title:'OMA 7', description:'Problemas de olimpiadas nivel 7', price:'$4000', thumbnail: 'OMA7.jpg',code: 1237,stock: 10})
 
     //Preguntar por todos los productos agregados
     console.log(`\nPrueba de todos los productos agregados`)
@@ -46,7 +48,7 @@ import {ProductManager} from './index.mjs'
 
     //Modificar los campos de un producto
     console.log(`\nPrueba de modificación de un producto`)
-    await productos.updateProduct(5, { "price": "$50000", "stock": 150 })
+    await productos.updateProduct(6, { price: "$50000", stock: 150 })
 
     //Preguntar por todos los productos agregados
     console.log(`\nPrueba de todos los productos agregados`)

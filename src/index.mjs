@@ -140,7 +140,6 @@ export class ProductManager {
                 delete camposActualizados.code
 
                 let reducidos = products.filter((prod) => prod.id !== id)
-                console.log(reducidos)
 
                 // Verifica si el título del producto ya existe.
                 if (reducidos.some((prod) => prod.title === camposActualizados.title)) {
