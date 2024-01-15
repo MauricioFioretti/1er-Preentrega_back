@@ -30,9 +30,7 @@ app.get("/products", async (req, res) => {
         //corregir el poner 2fkjscdbc y que se muestren 2 productos
         if (!isNaN(limit) && limit > 0) {
             // Reducir el array de productos según el limit especificado
-            let arrayReducido = [...productos]
-            arrayReducido.splice(limit, productos.length - limit)
-            //let arrayReducido = productos.slice(0, limit)
+            let arrayReducido = productos.slice(0, limit)
             res.status(200).json({ message: 'Productos obtenidos correctamente', data: arrayReducido })
         }
         else {
@@ -41,7 +39,6 @@ app.get("/products", async (req, res) => {
     }
     catch (error) {
         // Manejar errores y enviar respuesta de error al cliente
-        console.error(`Error al manejar la solicitud: ${error}`)
         res.status(500).json({ error: 'Error interno del servidor' })
     }
 })
@@ -56,7 +53,6 @@ app.get("/products/:pid", async (req, res) => {
     }
     catch (error) {
         // Manejar errores y enviar respuesta de error al cliente
-        console.error(`Error al manejar la solicitud: ${error}`)
         res.status(500).json({ error: 'Error interno del servidor' })
     }
 })
@@ -73,17 +69,12 @@ app.post("/saveProducts", async (req, res) => {
     }
     catch (error) {
         // Manejar errores y enviar respuesta de error al cliente
-        console.error(`Error al manejar la solicitud: ${error}`)
         res.status(500).json({ error: 'Error interno del servidor' })
     }
 })
 
 // Ruta para actualizar productos 
 app.put("/updateProducts", async (req, res) => {
-    // let solicitud = req.body
-    // let id = solicitud.id
-    // delete solicitud.id
-
     //Arreglar bug de actulizacion a donde le cambio el codigo a un producto que no es el correspondiente
     //No pueden quedar 2 libros con el mismo codigo, titulo o imagen
 
@@ -96,7 +87,6 @@ app.put("/updateProducts", async (req, res) => {
     }
     catch (error) {
         // Manejar errores y enviar respuesta de error al cliente
-        console.error(`Error al manejar la solicitud: ${error}`)
         res.status(500).json({ error: 'Error interno del servidor' })
     }
 })
@@ -105,13 +95,12 @@ app.put("/updateProducts", async (req, res) => {
 app.delete("/deleteProduct/:pid", async (req, res) => {
     let id = parseInt(req.params.pid)
     try {
-        // Agregar productos usando el metodo addProducts()
+        // Eliminar productos usando el metodo deleteProduct()
         let respuesta = await products.deleteProduct(id)
         res.json({ message: respuesta })
     }
     catch (error) {
         // Manejar errores y enviar respuesta de error al cliente
-        console.error(`Error al manejar la solicitud: ${error}`)
         res.status(500).json({ error: 'Error interno del servidor' })
     }
 })

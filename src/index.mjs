@@ -58,13 +58,10 @@ export class ProductManager {
         try {
             // Obtiene y muestra por consola todos los productos.
             let products = await this.leerArchivo(this.path)
-            //Descomentar la siguiente línea en caso de que quiera ver los products cada vez que se invoque el método getProducts()
-            //console.log(products)
             return products
         }
         catch (error) {
             // Captura y manejo de errores durante la obtención de productos.
-            //console.error(`Error al obtener los productos.`, error)
             return `Error al obtener los productos.`, error
         }
     }
@@ -74,7 +71,6 @@ export class ProductManager {
         try {
             // Verifica si algún campo requerido está vacío.
             if (!newProduct.title || !newProduct.description || !newProduct.price || !newProduct.thumbnail || !newProduct.code || !newProduct.stock) {
-                //console.log(`El producto que intenta agregar no tiene todos los campos!`)
                 return `El producto que intenta agregar no tiene todos los campos!`
             } else {
                 // Obtiene productos existentes.
@@ -89,17 +85,14 @@ export class ProductManager {
                     // Agrega el nuevo producto y actualiza el archivo.
                     products.push(newProduct)
                     await this.escribirArchivo(this.path, products)
-                    //console.log(`El libro ${title} ha sido agregado correctamente`)
                     return `El libro ${newProduct.title} ha sido agregado correctamente`
 
                 } else {
-                    //console.log(`El código ${code} ya existe`)
                     return `El código ${newProduct.code} ya existe`
                 }
             }
         } catch (error) {
             // Captura y manejo de errores durante la adición de productos.
-            //console.error(`Error al agregar un producto.`, error)
             return `Error al agregar un producto.`, error
         }
     }
@@ -112,16 +105,13 @@ export class ProductManager {
             let busquedaPorId = products.find((prod) => prod.id === id)
 
             if (busquedaPorId) {
-                //console.log(busquedaPorId)
                 return busquedaPorId
             } else {
-                //console.log(`El producto con el id: ${id} no se ha encontrado.`)
                 return false
             }
         }
         catch (error) {
             // Captura y manejo de errores durante la obtención de un producto por ID.
-            //console.error(`Error al obtener el producto por ID.`, error)
             return {messaje: `Error al obtener el producto por ID.`, error: error}
         }
     }
@@ -142,10 +132,6 @@ export class ProductManager {
                 // Actualizar los campos del producto con los proporcionados.
                 Object.assign(productoAModificar, camposActualizados)
 
-                // Mostrar el producto modificado en la consola.
-                //console.log(`El producto con id ${id} ha sido actualizado. `)
-                //console.log(productoAModificar)
-
                 // Reemplazar el producto original con el modificado en la lista de products.
                 products[productoIndex] = productoAModificar
 
@@ -154,13 +140,11 @@ export class ProductManager {
 
                 return `El producto con id ${id} ha sido actualizado.`
             } else {
-                //console.log(`El producto con id: ${id} no ha sido encontrado`)
                 return `El producto con id: ${id} no ha sido encontrado`
             }
         }
         catch (error) {
             // Captura y manejo de errores durante la actualización del producto.
-            //console.error(`Error al actualizar el producto.`, error)
             return `Error al actualizar el producto.`, error
         }
     }
@@ -178,20 +162,15 @@ export class ProductManager {
                 // Filtrar los productos para excluir el que tiene el ID proporcionado.
                 let productosReducido = productos.filter((prod) => prod.id !== id)
 
-                // Mostrar un mensaje indicando que el producto ha sido eliminado correctamente de la base de datos.
-                //console.log(`El producto con id ${id} ha sido eliminado correctamente de la base de datos.`)
-
                 // Escribir la lista actualizada de productos en el archivo.
                 await this.escribirArchivo(this.path, productosReducido)
                 return `El producto con id ${id} ha sido eliminado correctamente de la base de datos.`
             } else {
-                //console.log(`El producto con id ${id} no se eliminó, ya que no se encuentra en la base de datos.`)
                 return `El producto con id ${id} no se eliminó, ya que no se encuentra en la base de datos.`
             }
         }
         catch (error) {
             // Captura y manejo de errores durante la eliminación del producto.
-            console.error(`Error al eliminar el producto.`, error)
             return `Error al eliminar el producto.`, error
         }
     }
