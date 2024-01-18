@@ -20,7 +20,7 @@ routerCart.get('/:cid', async (req, res) => {
     if (id) {
         let carrito = await carts.getCart(id)
         if (carrito.success) {
-            res.status(201).json({ message: carrito.message, data: carrito.data })
+            res.status(200).json({ message: carrito.message, data: carrito.data })
         } else {
             res.status(404).json({ message: carrito.message, error: carrito.error })
         }

@@ -100,7 +100,7 @@ export class ProductManager {
             // Obtiene productos existentes.
             let products = await this.leerArchivo(this.path)
 
-            // Verifica si el código del producto ya existe. Con 2 iguales a propósito por si tenemos un caso como 12345 == "12345", eso tiene que dar true ya que son el mismo código pero en forma de string y número
+            // Verifica si el código del producto ya existe. Con 2 iguales ('=') a propósito por si tenemos un caso como 12345 == "12345", eso tiene que dar true ya que son el mismo código pero en forma de string y número
             if (products.some((prod) => prod.code == newProduct.code)) {
                 throw new Error(`El código ${newProduct.code} ya existe`)
             }
@@ -270,5 +270,5 @@ export class ProductManager {
     }
 }
 
-// Exportación de la clase ProductManager y la función ejecutar para su uso en otros módulos.
+// Exportación de la clase ProductManager para su uso en otros módulos.
 export default { ProductManager }
