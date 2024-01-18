@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon ./src/app.mjs",
-    "crear": "node ./src/functionFileJSON.mjs"
+    "crear": "node ./src/functionTest/functionFileJSON.mjs"
   },
   "keywords": [],
   "author": "",

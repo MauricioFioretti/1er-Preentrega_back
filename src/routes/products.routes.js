@@ -1,30 +1,15 @@
-import express, { urlencoded } from 'express'
 import { Router } from "express"
 
 // Importar la clase ProductManager desde el módulo index.js
-import { ProductManager } from "../index.mjs"
+import { ProductManager } from "../models/productManager.mjs"
+
+import { soloNumero } from "../functionTest/functions.mjs"
 
 //Instanciamos Router() en la variable que vamos a usar routerProd
 const routerProd = Router()
 
-// Crear una instancia de Express 
-const app = express()
-app.use(urlencoded({ extended: true }))
-app.use(express.json())
-
 // Crear una instancia de ProductManager
 const products = new ProductManager()
-
-//Notemos que la función admite cualquier string, pero si el número es negativo o decimal, el caracter '-', '.' y ',' hace que retorne false, por lo que solo admite naturales y el 0. Luego el 0 tomado en un if es false, por lo que sirve para números naturales como se pretendía.
-//Esta función fue creada ya que los id que necesito, tienen que ser solo números. Y el problema es que si yo parseo 2f354df por ejemplo, lo toma como el número 2 y eso está mal. Además si pongo números con punto también me los transforma en enteros. 
-function soloNumero(num) {
-    for (let i of String(num)) {
-        if (isNaN(parseInt(i))) {
-            return false
-        }
-    }
-    return parseInt(num)
-}
 
 routerProd.get('/', async (req, res) => {
     // Obtener productos con el método getProducts()

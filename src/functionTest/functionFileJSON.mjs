@@ -1,4 +1,4 @@
-import { ProductManager } from './index.mjs'
+import { ProductManager } from "../models/productManager.mjs"
 
 // Función autoinvocada asincrónica para ejecutar pruebas y operaciones con la clase ProductManager.
 (async function ejecutar() {
@@ -69,8 +69,8 @@ import { ProductManager } from './index.mjs'
     // //console.log(prods3.data)
 
     //Modificar los campos de un producto
-    console.log(`\nPrueba de modificación de un producto`)
-    await productos.updateProduct(6, { price: "$50000", stock: 150 })
+    // console.log(`\nPrueba de modificación de un producto`)
+    // await productos.updateProduct(6, { price: "$50000", stock: 150 })
 
     // //Preguntar por todos los productos agregados
     // console.log(`\nPrueba de todos los productos agregados`)

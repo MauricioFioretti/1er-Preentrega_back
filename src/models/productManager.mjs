@@ -10,7 +10,7 @@ const __dirname = dirname(__filename)
 export class ProductManager {
     constructor() {
         // Al utilizar el módulo path de Node.js junto con la variable global __dirname, creamos una ruta completa que es independiente del directorio en el que se encuentra el archivo 'products.json' y las unimos con join del módulo de Node.js.
-        this.path = join(__dirname, '../data/products.json')
+        this.path = join(__dirname, '../../data/products.json')
         this.archivoExiste()
     }
 
