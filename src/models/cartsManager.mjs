@@ -1,17 +1,12 @@
 import { promises as fs } from 'node:fs'
 import { existsSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
-import { join, dirname } from 'node:path'
-
-// Obtener la ruta del archivo actual (__filename) y su directorio (__dirname)
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+import { join } from 'node:path'
+import __dirname from '../../config/path.js'
 
 export class CartsManager {
     constructor() {
-        // Al utilizar el módulo path de Node.js junto con la variable global __dirname, creamos una ruta completa que es independiente del directorio en el que se encuentra el archivo 'carts.json' o 'products.json' y las unimos con join del módulo de Node.js.
-        this.path = join(__dirname, '../../data/carts.json')
-        this.path2 = join(__dirname, '../../data/products.json')
+        this.path = join(__dirname, '../data/carts.json')
+        this.path2 = join(__dirname, '../data/products.json')
         this.archivoExiste()
     }
 

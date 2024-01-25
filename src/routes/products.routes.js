@@ -1,9 +1,9 @@
 import { Router } from "express"
+import { soloNumero } from "../functionTest/functions.mjs"
+import { io } from "../app.mjs"
 
 // Importar la clase ProductManager desde el módulo index.js
 import { ProductManager } from "../models/productManager.mjs"
-
-import { soloNumero } from "../functionTest/functions.mjs"
 
 //Instanciamos Router() en la variable que vamos a usar routerProd
 const routerProd = Router()
@@ -52,6 +52,10 @@ routerProd.post('/', async (req, res) => {
     // Agregar productos usando el método addProducts()
     let producto = await products.addProducts(solicitud)
     if (producto.success) {
+
+        let productosHandlebars = await (await products.getProducts()).data
+        io.emit('actualizarProductos', productosHandlebars)
+        
         res.status(201).json({ message: producto.message, data: producto.data })
     } else {
         // Manejar errores y enviar respuesta de error al cliente

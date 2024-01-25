@@ -1,0 +1,30 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 1rem;
+    background-color: aqua;
+
+    .products {
+        padding-top: 30px;
+        display: flex;
+        flex-wrap: wrap;
+
+        .card {
+            margin: 10px;
+        }
+    }
+
+    .productsRealTime{
+        padding-top: 30px;
+        display: flex;
+        flex-wrap: wrap;
+
+        .card {
+            margin: 10px;
+        }
+    }
+}
