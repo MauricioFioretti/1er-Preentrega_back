@@ -21,16 +21,16 @@
 // export default socketHandler
 
 const productsInnerHTML = (array) => {
-    const cards = ""
+    let cards = ""
     for(let i = 0; i < array.length; i++){
         cards += `
         <div class="card" style="width: 18rem;">
-            {{!-- <img src="{{${array[i].title}}}" class="card-img-top" alt="{{${array[i].title}}}"> --}}
+            <img src="img-pred.jpg" class="card-img-top" alt="${array[i].title}"> 
             <div class="card-body">
-                <h5 class="card-title">{{${array[i].title}}}</h5>
-                <p class="card-text">Descripción: {{${array[i].description}}}</p>
-                <p class="card-price">Precio por unidad: {{${array[i].price}}}</p>
-                <p class="card-category">Categoría: $ {{${array[i].category}}}</p>
+                <h5 class="card-title">${array[i].title}</h5>
+                <p class="card-text">Descripción: ${array[i].description}</p>
+                <p class="card-price">Precio por unidad: $${array[i].price}</p>
+                <p class="card-category">Categoría: $${array[i].category}</p>
             </div>
         </div>
         `
@@ -57,6 +57,6 @@ const productsRealTime = document.querySelector('.productsRealTime')
 //Recibimos los productos listos como data, a donde estan los productos actualizados, solo con algunas propiedades necesarias para hacer una funcion que los puestre por html y actualice la pagina. 
 socket.on('productsListos', (data) => {
     const htmlListo = productsInnerHTML(data)
-    productsRealTime.innerHTML = htmlListo 
     console.log(htmlListo)
+    productsRealTime.innerHTML = htmlListo 
 })
