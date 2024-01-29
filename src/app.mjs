@@ -8,7 +8,22 @@ import http from 'http'
 import routerProd from './routes/products.routes.js'
 import routerCart from './routes/carts.routes.js'
 import routerHandlebars from './routes/handlebars.routes.js'
-import routerRealTimeProducts from './routes/realTimeProds.routes.js'
+//import routerRealTimeProducts from './routes/realTimeProds.routes.js'
+
+
+
+
+
+
+// Importar la clase ProductManager desde el módulo index.js
+import { ProductManager } from './models/productManager.mjs'
+// Crear una instancia de Produ ctManager
+const prod = new ProductManager()
+
+
+
+
+
 
 // Crear una instancia de Express 
 const app = express()
@@ -18,7 +33,7 @@ app.use(urlencoded({ extended: true }))
 //Handlebars o motor de plantilla
 app.engine('handlebars', engine())
 app.set('view engine', 'handlebars')
-app.set('views', join(__dirname , '../src/views'))
+app.set('views', join(__dirname, '../src/views'))
 
 //Archivos estaticos
 app.use('/', express.static(join(__dirname, '../src/public')))
@@ -34,11 +49,68 @@ server.listen(8080, () => {
 const io = new Server(server)
 export { app, io, server }
 
+
+
+
+
+
+
+app.get('/realtimeproducts', async (req, res) => {
+    const products = await (await prod.getProducts()).data
+    res.render('realTimeProducts', {
+        "array": products,
+        "valor": true
+    })
+})
+
+//Prendo el servidor io y me pongo a escuchar con .on 
+io.on('connection', async (socket) => {
+
+    // Emitir los productos iniciales al conectarse
+    const products = await (await prod.getProducts()).data
+    socket.emit('productsListos', products)
+
+    //Mensaje de conexion apenas cargamos el sitio.
+    socket.on('mensajeConexion', (data) => {
+        if (data) {
+            console.log(data)
+            socket.emit('mensaje', 'Hola cliente')
+        }
+    })
+
+    //Recibo todos los productos del Front actualizados, los proceso y los guardo en un array, pero solo con la propiedades necesarias
+    socket.on('dataProducts', (data) => {
+        const arrayProductosListo = []
+        for (let obj of data) {
+            arrayProductosListo.push({
+                "title": obj.title,
+                "description": obj.description,
+                "price": obj.price,
+                "category": obj.category
+            })
+        }
+
+        //Mandamos el objeto con los productos listos para crear una funcion que genere html por cada producto y los haga cards
+        io.sockets.emit('productsListos', arrayProductosListo)
+    })
+})
+
+
+
+
+
+
+
+
+
+
+
+
 //Routes o endpoints
 app.use('/api/products', routerProd)
 app.use('/api/carts', routerCart)
-app.use('/handlebars', routerHandlebars)    
-app.use('/realtimeproducts', routerRealTimeProducts)
+app.use('/handlebars', routerHandlebars)
+//app.use('/realtimeproducts', routerRealTimeProducts)
 
 
 //En caso que el archivo products.json no esté creado en la carpeta data, aplicar el comando 'npm run crear'.

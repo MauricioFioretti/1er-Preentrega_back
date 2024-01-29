@@ -73,8 +73,8 @@ routerProd.put('/:pid', async (req, res) => {
 
         if (producto.success) {
             //Con estas 2 lineas de codigo emitimos un mensaje que avisa que se tienen que cargar nuevos productos en la pagina en tiempo real
-            // let productosHandlebars = await (await products.getProducts()).data
-            // io.emit('actualizarProductos', productosHandlebars)
+            let productosHandlebars = await (await products.getProducts()).data
+            io.emit('actualizarProductos', productosHandlebars)
 
             res.status(201).json({ message: producto.message, data: producto.data })
         } else {
@@ -93,8 +93,8 @@ routerProd.delete('/:pid', async (req, res) => {
         let respuesta = await products.deleteProduct(id)
         if (respuesta.success) {
             //Con estas 2 lineas de codigo emitimos un mensaje que avisa que se tienen que cargar nuevos productos en la pagina en tiempo real
-            // let productosHandlebars = await (await products.getProducts()).data
-            // io.emit('actualizarProductos', productosHandlebars)
+            let productosHandlebars = await (await products.getProducts()).data
+            io.emit('actualizarProductos', productosHandlebars)
 
             res.status(200).json({ message: respuesta.message, data: respuesta.data })
         } else {
