@@ -53,9 +53,10 @@ routerProd.post('/', async (req, res) => {
     let producto = await products.addProducts(solicitud)
     if (producto.success) {
 
+        //Con estas 2 lineas de codigo emitimos un mensaje que avisa que se tienen que cargar nuevos productos en la pagina en tiempo real
         let productosHandlebars = await (await products.getProducts()).data
-        io.emit('actualizarProductos', productosHandlebars)
-        
+        io.sockets.emit('actualizarProductos', productosHandlebars)
+
         res.status(201).json({ message: producto.message, data: producto.data })
     } else {
         // Manejar errores y enviar respuesta de error al cliente
@@ -71,6 +72,10 @@ routerProd.put('/:pid', async (req, res) => {
         let producto = await products.updateProduct(id, req.body)
 
         if (producto.success) {
+            //Con estas 2 lineas de codigo emitimos un mensaje que avisa que se tienen que cargar nuevos productos en la pagina en tiempo real
+            // let productosHandlebars = await (await products.getProducts()).data
+            // io.emit('actualizarProductos', productosHandlebars)
+
             res.status(201).json({ message: producto.message, data: producto.data })
         } else {
             // Manejar errores y enviar respuesta de error al cliente
@@ -87,6 +92,10 @@ routerProd.delete('/:pid', async (req, res) => {
         // Eliminar productos usando el metodo deleteProduct()
         let respuesta = await products.deleteProduct(id)
         if (respuesta.success) {
+            //Con estas 2 lineas de codigo emitimos un mensaje que avisa que se tienen que cargar nuevos productos en la pagina en tiempo real
+            // let productosHandlebars = await (await products.getProducts()).data
+            // io.emit('actualizarProductos', productosHandlebars)
+
             res.status(200).json({ message: respuesta.message, data: respuesta.data })
         } else {
             // Manejar errores y enviar respuesta de error al cliente
