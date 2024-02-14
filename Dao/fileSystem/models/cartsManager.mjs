@@ -2,7 +2,6 @@ import { promises as fs } from 'node:fs'
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import __dirname from '../../config/path.js'
-import { conectarConMongoDB } from '../../Dao/db/index.js'
 
 export class CartsManager {
     constructor() {

@@ -3,7 +3,7 @@ import { soloNumero } from "../functionTest/functions.mjs"
 import { io } from "../app.mjs"
 
 // Importar la clase ProductManager desde el módulo index.js
-import { ProductManager } from "../models/productManager.mjs"
+import { ProductManager } from "../../Dao/db/models/productManagerDB.js"
 
 //Instanciamos Router() en la variable que vamos a usar routerProd
 const routerProd = Router()
@@ -14,6 +14,7 @@ const products = new ProductManager()
 routerProd.get('/', async (req, res) => {
     // Obtener productos con el método getProducts()
     let productos = await products.getProducts()
+
     if (productos.success) {
         let limit = soloNumero(req.query.limit)
 
@@ -33,17 +34,14 @@ routerProd.get('/', async (req, res) => {
 
 routerProd.get('/:pid', async (req, res) => {
     //Capturar id de params y buscar producto con método getProductById()
-    let pid = soloNumero(req.params.pid)
-    if (pid) {
-        let productoId = await products.getProductById(pid)
-        if (productoId.success) {
-            res.status(200).json({ message: productoId.message, data: productoId.data })
-        } else {
-            // Manejar errores y enviar respuesta de error al cliente
-            res.status(404).json({ message: productoId.message, error: productoId.error })
-        }
+    let pid = req.params.pid
+    let productoId = await products.getProductById(pid)
+
+    if (productoId.success) {
+        res.status(200).json({ message: productoId.message, data: productoId.data })
     } else {
-        res.status(404).json({ message: `El id ingresado es incorrecto.` })
+        // Manejar errores y enviar respuesta de error al cliente
+        res.status(404).json({ message: productoId.message, error: productoId.error.message})
     }
 })
 
@@ -65,44 +63,37 @@ routerProd.post('/', async (req, res) => {
 })
 
 routerProd.put('/:pid', async (req, res) => {
-    let id = soloNumero(req.params.pid)
+    let id = req.params.pid
 
-    if (id) {
-        // Actualizar productos usando el método updateProduct()
-        let producto = await products.updateProduct(id, req.body)
+    // Actualizar productos usando el método updateProduct()
+    let producto = await products.updateProduct(id, req.body)
 
-        if (producto.success) {
-            //Con estas 2 lineas de codigo emitimos un mensaje que avisa que se tienen que cargar nuevos productos en la pagina en tiempo real
-            let productosHandlebars = await (await products.getProducts()).data
-            io.emit('actualizarProductos', productosHandlebars)
+    if (producto.success) {
+        //Con estas 2 lineas de codigo emitimos un mensaje que avisa que se tienen que cargar nuevos productos en la pagina en tiempo real
+        let productosHandlebars = await products.getProducts().data
+        io.emit('actualizarProductos', productosHandlebars)
 
-            res.status(201).json({ message: producto.message, data: producto.data })
-        } else {
-            // Manejar errores y enviar respuesta de error al cliente
-            res.status(404).json({ message: producto.message, error: producto.error })
-        }
+        res.status(201).json({ message: producto.message, data: producto.data })
     } else {
-        res.status(404).json({ message: `El id ingresado es incorrecto.` })
+        // Manejar errores y enviar respuesta de error al cliente
+        res.status(404).json({ message: producto.message, error: producto.error.message })
     }
 })
 
 routerProd.delete('/:pid', async (req, res) => {
-    let id = soloNumero(req.params.pid)
-    if (id) {
-        // Eliminar productos usando el metodo deleteProduct()
-        let respuesta = await products.deleteProduct(id)
-        if (respuesta.success) {
-            //Con estas 2 lineas de codigo emitimos un mensaje que avisa que se tienen que cargar nuevos productos en la pagina en tiempo real
-            let productosHandlebars = await (await products.getProducts()).data
-            io.emit('actualizarProductos', productosHandlebars)
+    let id = req.params.pid
 
-            res.status(200).json({ message: respuesta.message, data: respuesta.data })
-        } else {
-            // Manejar errores y enviar respuesta de error al cliente
-            res.status(404).json({ message: respuesta.message, error: respuesta.error })
-        }
+    // Eliminar productos usando el metodo deleteProduct()
+    let respuesta = await products.deleteProduct(id)
+
+    if (respuesta.success) {
+        //Con estas 2 lineas de codigo emitimos un mensaje que avisa que se tienen que cargar nuevos productos en la pagina en tiempo real
+        let productosHandlebars = (await products.getProducts()).data
+        io.emit('actualizarProductos', productosHandlebars)
+        res.status(200).json({ message: respuesta.message })
     } else {
-        res.status(404).json({ message: `El id ingresado es incorrecto. Por favor ingrese un número natural.` })
+        // Manejar errores y enviar respuesta de error al cliente
+        res.status(404).json({ message: respuesta.message, error: respuesta.error.message })
     }
 })
 
