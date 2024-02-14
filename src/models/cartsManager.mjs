@@ -2,11 +2,12 @@ import { promises as fs } from 'node:fs'
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import __dirname from '../../config/path.js'
+import { conectarConMongoDB } from '../../Dao/db/index.js'
 
 export class CartsManager {
     constructor() {
-        this.path = join(__dirname, '../data/carts.json')
-        this.path2 = join(__dirname, '../data/products.json')
+        this.path = join(__dirname, '../../Dao/fileSystem/carts.json')
+        this.path2 = join(__dirname, '../../Dao/fileSystem/products.json')
         this.archivoExiste()
     }
 

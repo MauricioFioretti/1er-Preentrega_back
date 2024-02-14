@@ -5,7 +5,7 @@ import __dirname from '../../config/path.js'
 
 export class ProductManager {
     constructor() {
-        this.path = join(__dirname, '../data/products.json')
+        this.path = join(__dirname, '../../Dao/fileSystem/products.json')
         this.archivoExiste()
     }
 
