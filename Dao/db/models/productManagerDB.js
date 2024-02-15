@@ -5,7 +5,7 @@ export class ProductManager {
     async getProducts() {
         try {
             // Obtener productos de la db
-            let productos = await Product.find()
+            let productos = await Product.find().lean()
             return { success: true, message: "Productos obtenidos correctamente", data: productos }
         }
         catch (error) {

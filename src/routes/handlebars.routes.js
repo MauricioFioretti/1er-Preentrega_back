@@ -7,10 +7,10 @@ const prod = new ProductManager()
 const routerHandlebars = Router()
 
 routerHandlebars.get('/home', async (req, res) => {
-    const products = await (await prod.getProducts()).data
+    const products = await prod.getProducts()
 
     res.render('home', {
-        "array": products,
+        "array": products.data,
         "valor": true
     })
 })

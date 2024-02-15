@@ -1,7 +1,7 @@
 import { Router } from "express"
 
 // Importar la clase ProductManager desde el módulo index.js
-import { ProductManager } from "../models/productManager.mjs"
+import { ProductManager } from "../../Dao/db/models/productManagerDB.js" 
 
 //import { io } from "../app.mjs"
 import { io } from "../app.mjs"
@@ -12,9 +12,8 @@ const routerRealTimeProducts = Router()
 // Crear una instancia de Produ ctManager
 const prod = new ProductManager()
 
-
 routerRealTimeProducts.get('/', async (req, res) => {
-    const products = await (await prod.getProducts()).data
+    const products = await prod.getProducts().data
     res.render('realTimeProducts', {
         "array": products,
         "valor": true
@@ -24,7 +23,8 @@ routerRealTimeProducts.get('/', async (req, res) => {
     io.on('connection', async (socket) => {
 
         // Emitir los productos iniciales al conectarse
-        const products = await (await prod.getProducts()).data
+        const products = await prod.getProducts().data
+        console.log(products)
         socket.emit('productsListos', products)
 
         //Mensaje de conexion apenas cargamos el sitio.
@@ -39,6 +39,7 @@ routerRealTimeProducts.get('/', async (req, res) => {
         socket.on('dataProducts', (data) => {
             const arrayProductosListo = []
             for (let obj of data) {
+                console.log(obj)
                 arrayProductosListo.push({
                     "title": obj.title,
                     "description": obj.description,
