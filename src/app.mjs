@@ -6,10 +6,9 @@ import { Server } from 'socket.io'
 import http from 'http'
 import { conectarConMongoDB } from "../Dao/db/index.js"
 
-//import routerCart from './routes/carts.routes.js'
-
 import routerProd from './routes/products.routes.js'
-import routerCart from './routes/carts2.routes.js'
+import routerCart from './routes/carts.routes.js'
+// import routerCart from './routes/carts2.routes.js'
 import routerHandlebars from './routes/handlebars.routes.js'
 //import routerRealTimeProducts from './routes/realTimeProds.routes.js'
 
