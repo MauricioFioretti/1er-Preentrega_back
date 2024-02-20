@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { soloNumero } from "../functionTest/functions.mjs"
-import { io } from "../app.mjs"
+import { io } from "../routes/realTimeProds.routes.js"
 
 // Importar la clase ProductManager desde el módulo index.js
 import { ProductManager } from "../../Dao/db/models/productManagerDB.js"
@@ -52,7 +52,7 @@ routerProd.post('/', async (req, res) => {
     if (producto.success) {
 
         //Con estas 2 lineas de codigo emitimos un mensaje que avisa que se tienen que cargar nuevos productos en la pagina en tiempo real
-        let productosHandlebars = await (await products.getProducts()).data
+        let productosHandlebars = (await products.getProducts()).data
         io.sockets.emit('actualizarProductos', productosHandlebars)
 
         res.status(201).json({ message: producto.message, data: producto.data })
@@ -67,10 +67,10 @@ routerProd.put('/:pid', async (req, res) => {
 
     // Actualizar productos usando el método updateProduct()
     let producto = await products.updateProduct(id, req.body)
-
+    
     if (producto.success) {
         //Con estas 2 lineas de codigo emitimos un mensaje que avisa que se tienen que cargar nuevos productos en la pagina en tiempo real
-        let productosHandlebars = await products.getProducts().data
+        let productosHandlebars = (await products.getProducts()).data
         io.emit('actualizarProductos', productosHandlebars)
 
         res.status(201).json({ message: producto.message, data: producto.data })
