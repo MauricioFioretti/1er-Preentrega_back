@@ -17,7 +17,8 @@ export class CartsManager {
     // Método para obtener un carrito.
     async getCart(id) {
         try {
-            let carrito = await Cart.findById(id).populate("products.product")
+            // let carrito = await Cart.findById(id).populate("products.product")
+            let carrito = await Cart.findById(id)
 
             return { success: true, message: `Carrito obtenido correctamente`, data: carrito }
             
@@ -25,7 +26,6 @@ export class CartsManager {
             // Captura y manejo de errores durante la adición de carritos.
             return { success: false, message: `Error al obtener el carrito`, error: error.message }
         }
-
     }
 
     // Método para añadir un producto al carrito según el id del carrito y del producto.

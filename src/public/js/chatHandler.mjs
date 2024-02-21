@@ -5,18 +5,11 @@ const inputMessage = document.getElementById('inputMessage')
 const btnMessage = document.getElementById("btnMessage")
 const chatMessage = document.querySelector(".chatMessage")
 
-// const messageInnerHTML = (message) => {
-//     let messageFinal = ""
-//     for(let i = 0; i < message.length; i++){
-//         messageFinal += `<div class="messageUser">${message[i].nombre}: ${message[i].mensaje}</div>`
-//     }
-//     return messageFinal
-// }
-
 function messageInnerHTML(message){
     let messageFinal = ""
+    
     for(let i = 0; i < message.length; i++){
-        messageFinal += `<div class="messageUser">${message[i].nombre}: ${message[i].mensaje}</div>`
+        messageFinal += `<div class="messageUser">${message[i].user}: ${message[i].message}</div>`
     }
     return messageFinal
 }
@@ -34,6 +27,7 @@ btnMessage.addEventListener("click", (e)=>{
 })
 
 socket.on('respuestaMessage', (data) =>{
+    console.log()
     chatMessage.innerHTML = messageInnerHTML(data)
     chatMessage.scrollTop = chatMessage.scrollHeight
 })
