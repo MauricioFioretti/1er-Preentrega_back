@@ -1,9 +1,7 @@
 import { Router } from "express"
 import { CartsManager } from "../../Dao/db/models/cartManagerDB.js"
-import { soloNumero } from "../functionTest/functions.mjs"
 
 const routerCart = Router()
-
 const carts = new CartsManager()
 
 routerCart.post('/', async (req, res) => {
@@ -23,7 +21,6 @@ routerCart.get('/:cid', async (req, res) => {
     } else {
         res.status(404).json({ message: carrito.message, error: carrito.error })
     }
-
 })
 
 routerCart.post('/:cid/products/:pid', async (req, res) => {

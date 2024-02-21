@@ -90,6 +90,7 @@ routerProd.delete('/:pid', async (req, res) => {
         //Con estas 2 lineas de codigo emitimos un mensaje que avisa que se tienen que cargar nuevos productos en la pagina en tiempo real
         let productosHandlebars = (await products.getProducts()).data
         io.emit('actualizarProductos', productosHandlebars)
+        
         res.status(200).json({ message: respuesta.message })
     } else {
         // Manejar errores y enviar respuesta de error al cliente
