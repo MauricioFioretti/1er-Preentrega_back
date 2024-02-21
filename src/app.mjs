@@ -8,6 +8,7 @@ import routerProd from './routes/products.routes.js'
 import routerCart from './routes/carts.routes.js'
 import routerHandlebars from './routes/handlebars.routes.js'
 import { routerRealTimeProducts, server, app } from './routes/realTimeProds.routes.js'
+import { routerChat } from './routes/chat.routes.js' 
 
 // Configurar Express 
 app.use(express.json())
@@ -26,6 +27,7 @@ app.use('/api/products', routerProd)
 app.use('/api/carts', routerCart)
 app.use('/handlebars', routerHandlebars)
 app.use('/realtimeproducts', routerRealTimeProducts)
+app.use('/api/chat', routerChat)
 
 // Iniciar el servidor en el puerto 8080
 server.listen(8080, () => {
