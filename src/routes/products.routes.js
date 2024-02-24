@@ -17,6 +17,9 @@ routerProd.get('/', async (req, res) => {
 
     if (productos.success) {
         let limit = soloNumero(req.query.limit)
+        let page = soloNumero(req.query.page)
+        let sort = soloNumero(req.query.sort)
+        let query = soloNumero(req.query.query)
 
         if (limit && limit > 0) {
             // Reducir el array de productos según el limit especificado
