@@ -2,11 +2,30 @@ import { Product } from './product.modelDB.js'
 
 export class ProductManager {
     // Método para obtener todos los productos.
-    async getProducts() {
+    async getProducts(limit=10, page=1, sort=null, query) {
         try {
-            // Obtener productos de la db
-            let productos = await Product.find().lean()
-            return { success: true, message: "Productos obtenidos correctamente", data: productos }
+            let productos;
+
+            if (query == "disponibles") {
+                productos = await Product.paginate( { status: true }, { limit, page, sort: sort ? { price: sort } : {} })
+            } else {
+                productos = await Product.paginate( query ? { category: query } : {}, { limit, page, sort: sort ? { price: sort } : {} })
+            }
+
+            productos.docs = productos.docs.map(doc => doc.toObject())
+
+            return {
+                success: true,
+                message: "Productos obtenidos correctamente",
+                payload: productos.docs,
+                totalPages: productos.totalPages,
+                prevPage: productos.prevPage,
+                nextPage: productos.nextPage,
+                hasPrevPage: productos.hasPrevPage,
+                hasNextPage: productos.hasNextPage,
+                prevLink: productos.prevPage ? `http://localhost:8080/api/products?page=${productos.prevPage}&limit=${limit}&query=${query ? `&query=${query}` : ''}&sort=${sort}` : null,
+                nextLink: productos.nextPage ? `http://localhost:8080/api/products?page=${productos.nextPage}&limit=${limit}&query=${query ? `&query=${query}` : ''}&sort=${sort}` : null
+            }
         }
         catch (error) {
             // Captura y manejo de errores durante la obtención de productos.

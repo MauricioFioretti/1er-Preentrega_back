@@ -1,7 +1,7 @@
 import { Router } from "express"
 import { CartsManager } from "../../Dao/db/models/cartManagerDB.js"
 
-const routerCart = Router()
+const routerCart = Router() 
 const carts = new CartsManager()
 
 routerCart.post('/', async (req, res) => {
@@ -34,6 +34,19 @@ routerCart.post('/:cid/products/:pid', async (req, res) => {
         res.status(201).json({ message: addToCart.message, data: addToCart.data })
     } else {
         res.status(404).json({ message: addToCart.message, error: addToCart.error })
+    }
+})
+
+routerCart.delete('/:cid/products/:pid', async (req, res) => {
+    let cid = req.params.cid
+    let pid = req.params.pid
+
+    let deleteToCart = await carts.deleteProductToCart(cid, pid)
+
+    if (deleteToCart.success) {
+        res.status(200).json({ message: deleteToCart.message, data: deleteToCart.data })
+    } else {
+        res.status(404).json({ message: deleteToCart.message, error: deleteToCart.error })
     }
 })
 

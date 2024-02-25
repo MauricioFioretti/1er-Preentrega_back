@@ -8,3 +8,10 @@ export function soloNumero(num) {
     }
     return parseInt(num)
 }
+
+export function unoMenosUno(num) {
+    if(num == -1 || num == 1){
+        return parseInt(num)
+    }
+    return false
+}

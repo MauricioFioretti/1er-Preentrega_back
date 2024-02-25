@@ -17,8 +17,8 @@ export class CartsManager {
     // Método para obtener un carrito.
     async getCart(id) {
         try {
-            // let carrito = await Cart.findById(id).populate("products.product")
-            let carrito = await Cart.findById(id)
+            let carrito = await Cart.findById(id).populate("products.product")
+            //let carrito = await Cart.findById(id)
 
             return { success: true, message: `Carrito obtenido correctamente`, data: carrito }
             
@@ -40,6 +40,31 @@ export class CartsManager {
         } catch (error) {
             // Captura y manejo de errores durante la obtención de un carrito por ID.
             return { success: false, message: `Error al agregar el producto por ID.`, error: error }
+        }
+    }
+
+    // Método para eliminar un producto del carrito según el id del carrito y del producto.
+    async deleteProductToCart(cid, pid) {
+        try {
+            const result = await Cart.updateOne( { _id: cid }, { $pull: { products: { _id: pid } } } )
+
+            //await Cart.deleteOne({ _id: cid, 'products._id': pid })
+
+            return { success: true, message: `El producto con id ${pid} se eliminó correctamente.`, data: result }
+        } catch (error) {
+            // Captura y manejo de errores durante la obtención de un carrito por ID.
+            return { success: false, message: `Error al eliminar el producto por ID.`, error: error }
+        }
+    }
+
+    // Método para eliminar un producto del carrito según el id del carrito y del producto.
+    async deleteCart(cid) {
+        try {
+            await Cart.deleteOne({ _id: cid})
+            return { success: true, message: `El Carrito con id ${cid} se eliminó correctamente.` }
+        } catch (error) {
+            // Captura y manejo de errores durante la obtención de un carrito por ID.
+            return { success: false, message: `Error al eliminar el carrito por ID.`, error: error }
         }
     }
 }
