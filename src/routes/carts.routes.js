@@ -24,7 +24,6 @@ routerCart.get('/:cid', async (req, res) => {
 })
 
 routerCart.post('/:cid/products/:pid', async (req, res) => {
-    //No los pasamos por la función soloNumero() porque a esos valores no los ingresa el usario, sino que se ingresan automáticamente con el botón de añadir que programa el front. Por lo que sabemos con seguridad que son números que vienen como string. 
     let cid = req.params.cid
     let pid = req.params.pid
 
@@ -34,6 +33,33 @@ routerCart.post('/:cid/products/:pid', async (req, res) => {
         res.status(201).json({ message: addToCart.message, data: addToCart.data })
     } else {
         res.status(404).json({ message: addToCart.message, error: addToCart.error })
+    }
+})
+
+routerCart.put('/:cid', async (req, res) => {
+    let cid = req.params.cid
+    let data = req.body.products
+
+    let updateCart = await carts.updateCart(cid, data)
+
+    if (updateCart.success) {
+        res.status(201).json({ message: updateCart.message, data: updateCart.data })
+    } else {
+        res.status(404).json({ message: updateCart.message, error: updateCart.error })
+    }
+})
+
+routerCart.put('/:cid/products/:pid', async (req, res) => {
+    let cid = req.params.cid
+    let pid = req.params.pid
+    let quantity = req.body.quantity
+
+    let updateQuantity = await carts.updateQuantity(cid, pid, quantity)
+
+    if (updateQuantity.success) {
+        res.status(201).json({ message: updateQuantity.message, data: updateQuantity.data })
+    } else {
+        res.status(404).json({ message: updateQuantity.message, error: updateQuantity.error })
     }
 })
 
