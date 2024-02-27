@@ -6,7 +6,7 @@ import { conectarConMongoDB } from "../Dao/db/index.js"
 
 import routerProd from './routes/products.routes.js'
 import routerCart from './routes/carts.routes.js'
-import routerHandlebars from './routes/handlebars.routes.js'
+import routerProducts from './routes/handlebars.routes.js'
 import { routerRealTimeProducts, server, app } from './routes/realTimeProds.routes.js'
 import { routerChat } from './routes/chat.routes.js' 
 
@@ -25,7 +25,7 @@ app.use('/', express.static(join(__dirname, '../src/public')))
 //Routes o endpoints
 app.use('/api/products', routerProd)
 app.use('/api/carts', routerCart)
-app.use('/handlebars', routerHandlebars)
+app.use('/products', routerProducts)
 app.use('/realtimeproducts', routerRealTimeProducts)
 app.use('/api/chat', routerChat)
 

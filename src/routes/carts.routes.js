@@ -1,7 +1,7 @@
 import { Router } from "express"
 import { CartsManager } from "../../Dao/db/models/cartManagerDB.js"
 
-const routerCart = Router() 
+const routerCart = Router()
 const carts = new CartsManager()
 
 routerCart.post('/', async (req, res) => {
@@ -16,8 +16,12 @@ routerCart.post('/', async (req, res) => {
 routerCart.get('/:cid', async (req, res) => {
     let id = req.params.cid
     let carrito = await carts.getCart(id)
+
     if (carrito.success) {
-        res.status(200).json({ message: carrito.message, data: carrito.data })
+        res.render('cart', {
+            "array": carrito.data,
+            "valor": true
+        })
     } else {
         res.status(404).json({ message: carrito.message, error: carrito.error })
     }

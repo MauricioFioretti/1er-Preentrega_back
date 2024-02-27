@@ -6,8 +6,8 @@ import { io } from "../routes/realTimeProds.routes.js"
 import { ProductManager } from "../../Dao/db/models/productManagerDB.js"
 
 // //Importar la clase ProductManager desde el módulo index.js
-import { ProductManager2 } from "../../Dao/db/models/productManager5000.js"
-const products2 = new ProductManager2()
+// import { ProductManager2 } from "../../Dao/db/models/productManager5000.js"
+// const products2 = new ProductManager2()
 
 //Instanciamos Router() en la variable que vamos a usar routerProd
 const routerProd = Router()
@@ -23,10 +23,28 @@ routerProd.get('/', async (req, res) => {
     let query = req.query.query
 
     // Obtener productos con el método getProducts()
-    let productos = await products.getProducts(limit, page, sort, query)    
+    let productos = await products.getProducts(limit, page, sort, query)
+
+    productos.payload = productos.payload.map(item => {
+        return {
+            id: item._id,
+            title: item.title,
+            description: item.description,
+            price: item.price,
+            category: item.category.replace(/-/g, ' '),
+            stock: item.stock,
+            disponibilidad: item.status,
+            thumbnail: item.thumbnail
+        }
+    })
 
     if (productos.success && productos.payload.length > 0) {
-        res.status(200).json({ productos })
+        res.render('products', {
+            "array": productos.payload,
+            "valor": true
+        })
+        //res.status(200).json({ productos })
+
     } else if (productos.payload.length == 0) {
         res.status(500).json({ message: "No hay productos para mostrar", data: productos.payload, totalPages: productos.totalPages })
     } else {
@@ -53,8 +71,8 @@ routerProd.post('/', async (req, res) => {
     // Agregar productos usando el método addProducts()
     let producto = await products.addProducts(solicitud)
 
-    //Para agregar varios productos al mismo tiempo
-    await products2.addProducts()
+    // //Para agregar varios productos al mismo tiempo
+    //await products2.addProducts()
 
     if (producto.success) {
 
