@@ -1,9 +1,28 @@
 import { Router } from "express"
 import { soloNumero, unoMenosUno } from "../functionTest/functions.mjs"
 import { io } from "../routes/realTimeProds.routes.js"
+import { UserManager } from "../../Dao/db/models/usersManagerDB.js"
+
+//Instanciamos UserManager()
+const user = new UserManager()
 
 // Importar la clase ProductManager desde el módulo index.js
 import { ProductManager } from "../../Dao/db/models/productManagerDB.js"
+
+async function auth(req, res, next) {
+    if (req.session.email == 'adminCoder@coder.com' && req.session.password == 'adminCod3r123') {
+        req.session.admin = true
+        return next()
+    } else {
+        req.session.admin = false
+        let comprobar = await user.getUserByEmail(req.session.email, req.session.password)
+        if (comprobar.success) {
+            return next()
+        }
+    }
+
+    return res.send("Usted no tiene permisos de estar aqui.")
+}
 
 // //Importar la clase ProductManager desde el módulo index.js
 // import { ProductManager2 } from "../../Dao/db/models/productManager5000.js"
@@ -16,7 +35,7 @@ const routerProd = Router()
 const products = new ProductManager()
 
 
-routerProd.get('/', async (req, res) => {
+routerProd.get('/', auth, async (req, res) => {
     let limit = soloNumero(req.query.limit) || 10
     let page = soloNumero(req.query.page) || 1
     let sort = unoMenosUno(req.query.sort) || null
@@ -38,12 +57,14 @@ routerProd.get('/', async (req, res) => {
         }
     })
 
+
     if (productos.success && productos.payload.length > 0) {
         res.render('products', {
+            'user': req.session.user,
+            'rol': req.session.admin,
             "array": productos.payload,
             "valor": true
         })
-        //res.status(200).json({ productos })
 
     } else if (productos.payload.length == 0) {
         res.status(500).json({ message: "No hay productos para mostrar", data: productos.payload, totalPages: productos.totalPages })

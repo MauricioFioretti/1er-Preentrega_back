@@ -1,4 +1,13 @@
-<h1>Productos</h1>
+<h1> Bienvenido {{user}}, esta es la página de productos.</h1>
+{{#if rol}}
+<h4>Rol: Admin </h4>
+{{else}}
+<h4>Rol: User </h4>
+{{/if}}
+
+<form action="/api/view/logout" method="get">
+    <input type="submit" class="btn btn-success" value="Logout">
+</form>
 
 <div class="products">
     {{#each array}}
@@ -16,7 +25,7 @@
 </div>
 
 <script>
-    function addToCart(productId) { 
+    function addToCart(productId) {
         // Realizar la solicitud POST al endpoint del carrito. El carrito es fijo de momento, mas adelante se hara con session o con cookies.
         fetch(`/api/carts/65d61a0540a0bdbd3b2724f9/products/${productId}`, {
             method: 'POST',
@@ -27,4 +36,3 @@
         })
     }
 </script>
-
