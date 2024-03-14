@@ -5,6 +5,8 @@ import { join } from 'node:path'
 import { conectarConMongoDB } from "../Dao/db/index.js"
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
+import passport from 'passport'
+import { initializePassport } from './passport/passport.js'
 
 import routerProd from './routes/products.routes.js'
 import routerCart from './routes/carts.routes.js'
@@ -27,6 +29,11 @@ app.use(session({
 // Configurar Express 
 app.use(express.json())
 app.use(urlencoded({ extended: true }))
+
+// Configurar passport
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
 //Configurar Handlebars o motor de plantilla
 app.engine('handlebars', engine())

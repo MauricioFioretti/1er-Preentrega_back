@@ -2,6 +2,7 @@ import { Router } from "express"
 import { soloNumero, unoMenosUno } from "../functionTest/functions.mjs"
 import { io } from "../routes/realTimeProds.routes.js"
 import { UserManager } from "../../Dao/db/models/usersManagerDB.js"
+import { isValidatePassword } from '../../config/bcrypt.js'
 
 //Instanciamos UserManager()
 const user = new UserManager()
@@ -10,12 +11,14 @@ const user = new UserManager()
 import { ProductManager } from "../../Dao/db/models/productManagerDB.js"
 
 async function auth(req, res, next) {
-    if (req.session.email == 'adminCoder@coder.com' && req.session.password == 'adminCod3r123') {
-        req.session.admin = true
+    let session = req.session.passport.user
+
+    if (session.email == 'adminCoder@coder.com' && isValidatePassword('adminCod3r123', session.password)) {
+        session.admin = true
         return next()
     } else {
-        req.session.admin = false
-        let comprobar = await user.getUserByEmail(req.session.email, req.session.password)
+        session.admin = false
+        let comprobar = await user.getUserByEmail(session.email, session.password)
         if (comprobar.success) {
             return next()
         }
@@ -59,9 +62,10 @@ routerProd.get('/', auth, async (req, res) => {
 
 
     if (productos.success && productos.payload.length > 0) {
+        let session = req.session.passport.user
         res.render('products', {
-            'user': req.session.user,
-            'rol': req.session.admin,
+            'user': session.user,
+            'rol': session.admin,
             "array": productos.payload,
             "valor": true
         })
