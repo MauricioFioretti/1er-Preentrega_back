@@ -16,6 +16,9 @@ async function auth(req, res, next) {
     if (session.email == 'adminCoder@coder.com' && isValidatePassword('adminCod3r123', session.password)) {
         session.admin = true
         return next()
+    } else if (session.email) {
+        session.admin = false
+        return next()
     } else {
         session.admin = false
         let comprobar = await user.getUserByEmail(session.email, session.password)

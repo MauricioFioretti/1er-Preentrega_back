@@ -42,7 +42,7 @@ export class UserManager {
                     return { success: true, message: `El usuario con email: ${email} se encontró exitosamente.`, data: busquedaPorEmail }
                 } else if (busquedaPorEmail && password == busquedaPorEmail.password) {
                     return { success: true, message: `El usuario con email: ${email} se encontró exitosamente.`, data: busquedaPorEmail }
-                } else{
+                } else {
                     throw new Error(`El usuario o contraseña son incorrectos.`)
                 }
 
@@ -50,6 +50,33 @@ export class UserManager {
                 // Captura y manejo de errores durante la obtención de un usuario por email y contra.
                 return { success: false, message: `Error al obtener el usuario. `, error: error }
             }
+        }
+    }
+
+    // Método para obtener un producto por su ID.
+    async getUserByGithub(profile) {
+        try {
+            let email = profile.email
+            if (!email) {
+                throw new Error(`No existe email.`)
+            }
+
+            let userDeGithub = await User.findOne({ email })
+
+            if (userDeGithub) {
+                return { success: true, message: `El usuario con email: ${email} se encontró exitosamente.`, data: userDeGithub }
+            } else {
+                userDeGithub = await User.create({
+                    user: profile.name,
+                    email: profile.email,
+                    password: createHash('passwordGithub123.')
+                })
+                return { success: true, message: `El usuario con email: ${email} se encontró exitosamente.`, data: userDeGithub }
+            }
+
+        } catch (error) {
+            // Captura y manejo de errores durante la obtención de un usuario por email y contra.
+            return { success: false, message: `Error al obtener el usuario. `, error: error }
         }
     }
 
