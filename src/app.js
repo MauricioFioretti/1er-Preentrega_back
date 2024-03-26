@@ -14,7 +14,6 @@ import { routerRealTimeProducts, server, app } from './routes/realTimeProds.rout
 import { routerChat } from './routes/chat.routes.js' 
 import routerViews from './routes/views.routes.js'
 import routerAuth from './routes/auth.routes.js'
-//import routerHandlebarsProducts from './routes/handlebars.routes.js'
 
 //Iniciar session
 app.use(session({
@@ -48,7 +47,6 @@ app.use('/api/products', routerProd)
 app.use('/api/carts', routerCart)
 app.use('/api/realtimeproducts', routerRealTimeProducts)
 app.use('/api/chat', routerChat)
-//app.use('/api/productsHandle', routerHandlebarsProducts)
 
 app.use('/', routerViews)
 app.use('/auth', routerAuth)
