@@ -1,33 +1,37 @@
 import { Router } from "express"
-import { soloNumero, unoMenosUno } from "../functionTest/functions.mjs"
+import { soloNumero, unoMenosUno } from "../functionTest/functions.js"
 import { io } from "../routes/realTimeProds.routes.js"
-import { UserManager } from "../../Dao/db/models/usersManagerDB.js"
-import { isValidatePassword } from '../../config/bcrypt.js'
+import { UserManager } from "../Dao/db/managers/usersManagerDB.js"
+import { isValidatePassword } from '../config/bcrypt.js'
 
 //Instanciamos UserManager()
 const user = new UserManager()
 
 // Importar la clase ProductManager desde el módulo index.js
-import { ProductManager } from "../../Dao/db/models/productManagerDB.js"
+import { ProductManager } from "../Dao/db/managers/productManagerDB.js"
 
 async function auth(req, res, next) {
-    let session = req.session.passport.user
+    if (req.session && req.session.passport && req.session.passport.user) {
 
-    if (session.email == 'adminCoder@coder.com' && isValidatePassword('adminCod3r123', session.password)) {
-        session.admin = true
-        return next()
-    } else if (session.email) {
-        session.admin = false
-        return next()
-    } else {
-        session.admin = false
-        let comprobar = await user.getUserByEmail(session.email, session.password)
-        if (comprobar.success) {
+        let session = req.session.passport.user
+
+        if (session.email == 'adminCoder@coder.com' && isValidatePassword('adminCod3r123', session.password)) {
+            session.admin = true
             return next()
+        } else if (session.email) {
+            session.admin = false
+            return next()
+        } else {
+            session.admin = false
+            let comprobar = await user.getUserByEmail(session.email, session.password)
+            if (comprobar.success) {
+                return next()
+            }
         }
-    }
 
-    return res.send("Usted no tiene permisos de estar aqui.")
+        return res.send("Usted no tiene permisos de estar aqui.")
+    }
+    return res.redirect('/login')
 }
 
 // //Importar la clase ProductManager desde el módulo index.js
@@ -65,6 +69,8 @@ routerProd.get('/', auth, async (req, res) => {
 
 
     if (productos.success && productos.payload.length > 0) {
+        if (req.session.passport.user == undefined) return res.status(500).json({ message: "No hay productos para mostrar", data: productos.payload, totalPages: productos.totalPages })
+
         let session = req.session.passport.user
         res.render('products', {
             'user': session.user,

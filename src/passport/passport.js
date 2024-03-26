@@ -1,7 +1,7 @@
 import passport from "passport"
 import { Strategy as LocalStrategy } from 'passport-local'
 import { Strategy as github } from 'passport-github2'
-import { UserManager } from '../../Dao/db/models/usersManagerDB.js'
+import { UserManager } from '../Dao/db/managers/usersManagerDB.js'
 
 //Instanciamos UserManager()
 const user = new UserManager()
@@ -50,7 +50,7 @@ export function initializePassport() {
         {
             clientID:'Iv1.bf8a429adc9c6c90',
             clientSecret:'c067c1ead258f50fea2e3f4c55be5f294c013bca',
-            callbackURL:'http://localhost:8080/api/auth/callbackGithub'
+            callbackURL:'http://localhost:8080/auth/callbackGithub'
         },
         async (accessToken, refreshToken, profile, done) => {
             try {

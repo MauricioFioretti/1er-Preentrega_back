@@ -1,4 +1,4 @@
-import { Product } from './product.modelDB.js'
+import { Product } from '../models/product.modelDB.js'
 
 export class ProductManager {
     // Método para obtener todos los productos.

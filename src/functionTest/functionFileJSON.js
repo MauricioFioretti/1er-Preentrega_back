@@ -1,4 +1,4 @@
-import { ProductManager } from "../models/productManager.mjs"
+import { ProductManager } from "../models/productManager.js"
 
 // Función autoinvocada asincrónica para ejecutar pruebas y operaciones con la clase ProductManager.
 (async function ejecutar() {

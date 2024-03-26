@@ -1,4 +1,4 @@
-import { User } from "./users.modelDB.js"
+import { User } from "../models/users.modelDB.js"
 import { createHash, isValidatePassword } from '../../../config/bcrypt.js'
 
 export class UserManager {
@@ -57,8 +57,12 @@ export class UserManager {
     async getUserByGithub(profile) {
         try {
             let email = profile.email
+            let name = profile.name
+
             if (!email) {
-                throw new Error(`No existe email.`)
+                email = profile.id + '@gmail.com'
+            } if (!name) {
+                name = profile.login
             }
 
             let userDeGithub = await User.findOne({ email })
@@ -67,13 +71,12 @@ export class UserManager {
                 return { success: true, message: `El usuario con email: ${email} se encontró exitosamente.`, data: userDeGithub }
             } else {
                 userDeGithub = await User.create({
-                    user: profile.name,
-                    email: profile.email,
+                    user: name,
+                    email: email,
                     password: createHash('passwordGithub123.')
                 })
                 return { success: true, message: `El usuario con email: ${email} se encontró exitosamente.`, data: userDeGithub }
             }
-
         } catch (error) {
             // Captura y manejo de errores durante la obtención de un usuario por email y contra.
             return { success: false, message: `Error al obtener el usuario. `, error: error }
@@ -88,7 +91,7 @@ export class UserManager {
             return 'Usuario no encontrado'
         }
     }
-}
+}   
 
 // Exportación de la clase ProductManager para su uso en otros módulos.
 export default { UserManager }

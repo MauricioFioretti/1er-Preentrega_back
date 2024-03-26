@@ -1,7 +1,7 @@
 import express, { Router } from 'express'
 import { Server } from 'socket.io'
 import { createServer } from 'http'
-import { ProductManager } from "../../Dao/db/models/productManagerDB.js" 
+import { ProductManager } from "../Dao/db/managers/productManagerDB.js" 
 
 const app = express()
 const server = createServer(app)
@@ -19,7 +19,7 @@ const prod = new ProductManager()
 routerRealTimeProducts.get('/', async (req, res) => {
     const products = await prod.getProducts()
     res.render('realTimeProducts', {
-        "array": products.data,
+        "array": products.payload,
         "valor": true
     })
 })
@@ -29,7 +29,7 @@ io.on('connection', async (socket) => {
 
     // Emitir los productos iniciales al conectarse
     const products = await prod.getProducts()
-    socket.emit('productsListos', products.data)
+    socket.emit('productsListos', products.payload)
 
     //Mensaje de conexion apenas cargamos el sitio.
     socket.on('mensajeConexion', (data) => {

@@ -1,4 +1,4 @@
-import { Chat } from "./chat.modelDB.js"
+import { Chat } from "../models/chat.modelDB.js"
 
 export class ChatManager {
 

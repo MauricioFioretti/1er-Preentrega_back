@@ -1,16 +1,11 @@
 import { Router } from "express"
-import { UserManager } from "../../Dao/db/models/usersManagerDB.js"
+import { UserManager } from "../Dao/db/managers/usersManagerDB.js"
 
 //Instanciamos Router() en la variable que vamos a usar routerProd
 const routerViews = Router()
 
 //Instanciamos UserManager()
-const user = new UserManager()
-
-routerViews.get('/getSession', async (req, res) => {
-    let usuarios = await user.getUsers()
-    res.send(usuarios)
-})
+const user = new UserManager()  
 
 routerViews.get('/getUsers', async (req, res) => {
     let usuarios = await user.getUsers()
@@ -28,7 +23,7 @@ routerViews.get('/login', (req, res) => {
 routerViews.get('/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) res.send('Error en logout')
-        res.redirect('/api/view/login')
+        res.redirect('/login')
     })
 })
 

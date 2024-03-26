@@ -1,4 +1,4 @@
-import { Cart } from "./cart.modelDB.js"
+import { Cart } from "../models/cart.modelDB.js"
 
 export class CartsManager {
 

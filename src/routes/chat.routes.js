@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { io } from "../routes/realTimeProds.routes.js"
-import { ChatManager } from "../../Dao/db/models/chatManagerDB.js"
+import { ChatManager } from "../Dao/db/managers/chatManagerDB.js"
 
 //Instanciamos la clase de chatManager
 const chatManager = new ChatManager()
