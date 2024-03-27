@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { soloNumero, unoMenosUno } from "../functionTest/functions.js"
+import { soloNumero, unoMenosUno } from "../functions/functions.js"
 import { io } from "../routes/realTimeProds.routes.js"
 import { UserManager } from "../Dao/db/managers/usersManagerDB.js"
 import { isValidatePassword } from '../config/bcrypt.js'
