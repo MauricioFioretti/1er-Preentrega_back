@@ -2,37 +2,13 @@ import { Router } from "express"
 import { soloNumero, unoMenosUno } from "../functions/functions.js"
 import { io } from "../routes/realTimeProds.routes.js"
 import { UserManager } from "../Dao/db/managers/usersManagerDB.js"
-import { isValidatePassword } from '../config/bcrypt.js'
+import passport from "passport"
 
 //Instanciamos UserManager()
 const user = new UserManager()
 
 // Importar la clase ProductManager desde el módulo index.js
 import { ProductManager } from "../Dao/db/managers/productManagerDB.js"
-
-async function auth(req, res, next) {
-    if (req.session && req.session.passport && req.session.passport.user) {
-
-        let session = req.session.passport.user
-
-        if (session.email == 'adminCoder@coder.com' && isValidatePassword('adminCod3r123', session.password)) {
-            session.admin = true
-            return next()
-        } else if (session.email) {
-            session.admin = false
-            return next()
-        } else {
-            session.admin = false
-            let comprobar = await user.getUserByEmail(session.email, session.password)
-            if (comprobar.success) {
-                return next()
-            }
-        }
-
-        return res.send("Usted no tiene permisos de estar aqui.")
-    }
-    return res.redirect('/login')
-}
 
 // //Importar la clase ProductManager desde el módulo index.js
 // import { ProductManager2 } from "../../Dao/db/models/productManager5000.js"
@@ -45,7 +21,7 @@ const routerProd = Router()
 const products = new ProductManager()
 
 
-routerProd.get('/', auth, async (req, res) => {
+routerProd.get('/', passport.authenticate('jwt', {session:false}), async (req, res) => {
     let limit = soloNumero(req.query.limit) || 10
     let page = soloNumero(req.query.page) || 1
     let sort = unoMenosUno(req.query.sort) || null
@@ -69,12 +45,11 @@ routerProd.get('/', auth, async (req, res) => {
 
 
     if (productos.success && productos.payload.length > 0) {
-        if (req.session.passport.user == undefined) return res.status(500).json({ message: "No hay productos para mostrar", data: productos.payload, totalPages: productos.totalPages })
-
-        let session = req.session.passport.user
+        let usuario = req.user
         res.render('products', {
-            'user': session.user,
-            'rol': session.admin,
+            'firstName': usuario.firstName,
+            'role': usuario.role,
+            "cartId": usuario.cartId,
             "array": productos.payload,
             "valor": true
         })
@@ -87,7 +62,7 @@ routerProd.get('/', auth, async (req, res) => {
     }
 })
 
-routerProd.get('/:pid', async (req, res) => {
+routerProd.get('/:pid', passport.authenticate('jwt', {session:false}), async (req, res) => {
     //Capturar id de params y buscar producto con método getProductById()
     let pid = req.params.pid
     let productoId = await products.getProductById(pid)
@@ -100,7 +75,7 @@ routerProd.get('/:pid', async (req, res) => {
     }
 })
 
-routerProd.post('/', async (req, res) => {
+routerProd.post('/', passport.authenticate('jwt', {session:false}), async (req, res) => {
     let solicitud = req.body
     // Agregar productos usando el método addProducts()
     let producto = await products.addProducts(solicitud)
@@ -121,7 +96,7 @@ routerProd.post('/', async (req, res) => {
     }
 })
 
-routerProd.put('/:pid', async (req, res) => {
+routerProd.put('/:pid', passport.authenticate('jwt', {session:false}), async (req, res) => {
     let id = req.params.pid
 
     // Actualizar productos usando el método updateProduct()
@@ -139,7 +114,7 @@ routerProd.put('/:pid', async (req, res) => {
     }
 })
 
-routerProd.delete('/:pid', async (req, res) => {
+routerProd.delete('/:pid', passport.authenticate('jwt', {session:false}), async (req, res) => {
     let id = req.params.pid
 
     // Eliminar productos usando el metodo deleteProduct()

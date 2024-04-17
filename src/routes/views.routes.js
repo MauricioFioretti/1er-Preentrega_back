@@ -20,11 +20,4 @@ routerViews.get('/login', (req, res) => {
     res.render('login')
 })
 
-routerViews.get('/logout', (req, res) => {
-    req.session.destroy((err) => {
-        if (err) res.send('Error en logout')
-        res.redirect('/login')
-    })
-})
-
 export default routerViews

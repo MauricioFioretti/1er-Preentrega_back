@@ -3,9 +3,10 @@ import { Cart } from "../models/cart.modelDB.js"
 export class CartsManager {
 
     // Método para añadir un carrito nuevo a la db.
-    async addCart() {
+    async addCart(cartId) {
+        console.log('Entre al addTo cart')
         try {
-            let carrito = await Cart.create({})
+            let carrito = await Cart.create({cartId})
             return { success: true, message: `Carrito agregado correctamente`, data: carrito }
         }
         catch (error) {
@@ -17,7 +18,8 @@ export class CartsManager {
     // Método para obtener un carrito.
     async getCart(id) {
         try {
-            let carrito = await Cart.findById(id).populate("products.product")
+            // let carrito = await Cart.findById(id).populate("products.product")
+            let carrito = await Cart.findOne( {cartId: id}).populate("products.product")
 
             // Crear un nuevo array con los objetos deseados
             let nuevoArray = carrito.products.map((item) => {
@@ -43,9 +45,9 @@ export class CartsManager {
     // Método para añadir un producto al carrito según el id del carrito y del producto.
     async addProductsToCart(cid, pid) {
         try {
-            let resultado = await Cart.findOne({ _id: cid, 'products.product': pid })
-                ? await Cart.updateOne({ _id: cid, 'products.product': pid }, { $inc: { 'products.$.quantity': 1 } })
-                : await Cart.updateOne({ _id: cid }, { $addToSet: { products: { product: pid, quantity: 1 } } }, { upsert: true })
+            let resultado = await Cart.findOne({ cartId: cid, 'products.product': pid })
+                ? await Cart.updateOne({ cartId: cid, 'products.product': pid }, { $inc: { 'products.$.quantity': 1 } })
+                : await Cart.updateOne({ cartId: cid }, { $addToSet: { products: { product: pid, quantity: 1 } } }, { upsert: true })
 
             return { success: true, message: `El producto con id ${pid} se agregó correctamente.`, data: resultado }
 
@@ -58,7 +60,7 @@ export class CartsManager {
     // Método para actualizar todos los productos de un carrito según un arreglo de productos proporcionado.
     async updateCart(cid, data) {
         try {
-            let result = await Cart.updateOne({ _id: cid }, { $set: { products: data } })
+            let result = await Cart.updateOne({ cartId: cid }, { $set: { products: data } })
             return { success: true, message: `El carrito con id ${cid} se agregó correctamente.`, data: result }
 
         } catch (error) {
@@ -70,7 +72,7 @@ export class CartsManager {
     // Método para actualizar la cantidad de un producto del carrito según el id del producto y del carrito proporcionado.
     async updateQuantity(cid, pid, quantity) {
         try {
-            let resultado = await Cart.updateOne({ _id: cid, 'products.product': pid }, { $set: { 'products.$.quantity': quantity } })
+            let resultado = await Cart.updateOne({ cartId: cid, 'products.product': pid }, { $set: { 'products.$.quantity': quantity } })
 
             return { success: true, message: `Se modificó correctamente la cantidad del producto con id ${pid}.`, data: resultado }
 
@@ -83,7 +85,7 @@ export class CartsManager {
     // Método para eliminar un producto del carrito según el id del carrito y del producto.
     async deleteProductToCart(cid, pid) {
         try {
-            let result = await Cart.updateOne({ _id: cid }, { $pull: { products: { _id: pid } } })
+            let result = await Cart.updateOne({ cartId: cid }, { $pull: { products: { _id: pid } } })
             return { success: true, message: `El producto con id ${pid} se eliminó correctamente.`, data: result }
 
         } catch (error) {
@@ -95,7 +97,7 @@ export class CartsManager {
     // Método para eliminar un carrito según el id.
     async deleteCart(cid) {
         try {
-            await Cart.deleteOne({ _id: cid })
+            await Cart.deleteOne({ cartId: cid })
             return { success: true, message: `El Carrito con id ${cid} se eliminó correctamente.` }
         } catch (error) {
             // Captura y manejo de errores durante la eliminación de un carrito por ID.

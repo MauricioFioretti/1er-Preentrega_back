@@ -1,11 +1,11 @@
-<h1> Bienvenido {{user}}, esta es la página de productos.</h1>
-{{#if rol}}
+<h1> Bienvenido {{firstName}}, esta es la página de productos.</h1>
+{{#if role }}
 <h4>Rol: Admin </h4>
 {{else}}
 <h4>Rol: User </h4>
 {{/if}}
 
-<form action="/logout" method="get">
+<form action="../auth/logout" method="get">
     <input type="submit" class="btn btn-success" value="Logout">
 </form>
 
@@ -18,16 +18,17 @@
             <p class="card-price">Precio por unidad: ${{this.price}}</p>
             <p class="card-category">Categoría: {{this.category}}</p>
             <p class="card-category">Stock: {{this.stock}}</p>
-            <button type="button" class="btn btn-success" onclick="addToCart('{{this.id}}')">Agregar al carrito</button>
+            <button type="button" class="btn btn-success" onclick="addToCart('{{this.id}}', '{{../cartId}}')">Agregar al carrito</button>
         </div>
     </div>
     {{/each}}
 </div>
 
 <script>
-    function addToCart(productId) {
-        // Realizar la solicitud POST al endpoint del carrito. El carrito es fijo de momento, mas adelante se hara con session o con cookies.
-        fetch(`/api/carts/65d61a0540a0bdbd3b2724f9/products/${productId}`, {
+    function addToCart(productId, cartId) {
+        // Realizar la solicitud POST al endpoint del carrito.
+        let url = `/api/carts/${cartId}/products/${productId}`
+        fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

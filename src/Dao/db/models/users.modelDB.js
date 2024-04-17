@@ -2,9 +2,12 @@ import mongoose from "mongoose"
 
 const UserSchema = new mongoose.Schema(
     {
-        user: {
+        firstName: {
             type: String,
             required: true
+        },
+        lastName: {
+            type: String
         },
         password: {
             type: String,
@@ -15,7 +18,16 @@ const UserSchema = new mongoose.Schema(
             unique: true,
             required: true
         },
-        tel: {
+        cartId: {
+            type: String,
+            unique: true,
+            required: true
+        },
+        role: {
+            type: String,
+            default: 'User'
+        },
+        age: {
             type: Number
         }
     },

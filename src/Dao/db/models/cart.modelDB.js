@@ -15,6 +15,11 @@ const CartsSchema = new mongoose.Schema({
             }
         ],
         default: []
+    },
+    cartId: {
+        type: String,
+        unique: true,
+        required: true
     }
 })
 
