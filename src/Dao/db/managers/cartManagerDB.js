@@ -17,21 +17,31 @@ export class CartsManager {
     // Método para obtener un carrito.
     async getCart(id) {
         try {
-            // let carrito = await Cart.findById(id).populate("products.product")
             let carrito = await Cart.findOne({ cartId: id }).populate("products.product")
 
             // Crear un nuevo array con los objetos deseados
-            let nuevoArray = carrito.products.map((item) => {
-                return {
-                    title: item.product.title,
-                    quantity: item.quantity,
-                    description: item.product.description,
-                    price: item.product.price,
-                    priceTot: item.product.price * item.quantity,
-                    category: item.product.category.replace(/-/g, ' '),
-                    thumbnail: item.product.thumbnail
-                }
-            })
+            // let nuevoArray = carrito.products.map((item) => {
+            //     return {
+            //         title: item.product.title,
+            //         quantity: item.quantity,
+            //         description: item.product.description,
+            //         price: item.product.price,
+            //         priceTot: item.product.price * item.quantity,
+            //         category: item.product.category.replace(/-/g, ' '),
+            //         thumbnail: item.product.thumbnail
+            //     }
+            // })
+
+            // let nuevoArray = [...carrito.products, carrito.quantity]
+            
+            let nuevoArray = carrito.products.map(({ product, quantity }) => ({
+                ...product.toObject(),  // Convierte el documento poblado en un objeto plano
+                quantity,
+                priceTot: product.price * quantity,
+                category: product.category.replace(/-/g, ' ')
+            }))
+            
+            console.log(nuevoArray)
 
             return { success: true, message: `Carrito obtenido correctamente`, data: nuevoArray }
 
