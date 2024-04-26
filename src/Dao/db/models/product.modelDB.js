@@ -1,36 +1,36 @@
 import mongoose from "mongoose"
-import mongoosePaginate  from 'mongoose-paginate-v2'
+import mongoosePaginate from 'mongoose-paginate-v2'
 
 const ProductsSchema = new mongoose.Schema({
     title: {
-        type: String, 
+        type: String,
         unique: true,
         required: true
     },
     description: {
-        type: String, 
+        type: String,
         required: true
     },
     price: {
-        type: Number, 
+        type: Number,
         required: true
     },
     code: {
-        type: String, 
+        type: String,
         unique: true,
         required: true
     },
     category: {
-        type: String, 
+        type: String,
         required: true,
         enum: ["OMA-Nivel-1", "OMA-Nivel-2", "OMA-Nivel-3", "OMA-Nivel-4", "OMA-Nivel-5", "OMA-Nivel-6"]
     },
     thumbnail: {
         type: [String],
-        default: []     
+        default: []
     },
     stock: {
-        type: Number, 
+        type: Number,
         default: 10
     },
     status: {

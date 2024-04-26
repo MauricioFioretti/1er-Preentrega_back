@@ -1,23 +1,11 @@
 import { Router } from "express"
-import { UserManager } from "../Dao/db/managers/usersManagerDB.js"
+import { getUsersController, renderRegister, renderLogin } from "../controllers/views.controller.js"
 
-//Instanciamos Router() en la variable que vamos a usar routerProd
 const routerViews = Router()
 
-//Instanciamos UserManager()
-const user = new UserManager()  
-
-routerViews.get('/getUsers', async (req, res) => {
-    let usuarios = await user.getUsers()
-    res.send(usuarios)
-})
-
-routerViews.get('/register', (req, res) => {
-    res.render('register')
-})
-
-routerViews.get('/login', (req, res) => {
-    res.render('login')
-})
+// Rutas para obtener usuarios, registro e inicio de sesión
+routerViews.get('/getUsers', getUsersController)
+routerViews.get('/register', renderRegister)
+routerViews.get('/login', renderLogin)
 
 export default routerViews

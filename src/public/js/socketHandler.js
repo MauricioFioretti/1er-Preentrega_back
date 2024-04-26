@@ -1,6 +1,6 @@
 const productsInnerHTML = (array) => {
     let cards = ""
-    for(let i = 0; i < array.length; i++){
+    for (let i = 0; i < array.length; i++) {
         cards += `
         <div class="card" style="width: 18rem;">
             <img class="card-img-top" alt="${array[i].title}"> 
@@ -35,5 +35,5 @@ const productsRealTime = document.querySelector('.productsRealTime')
 //Recibimos los productos listos como data, a donde estan los productos actualizados, solo con algunas propiedades necesarias para hacer una funcion que los puestre por html y actualice la pagina. 
 socket.on('productsListos', (data) => {
     const htmlListo = productsInnerHTML(data)
-    productsRealTime.innerHTML = htmlListo 
+    productsRealTime.innerHTML = htmlListo
 })

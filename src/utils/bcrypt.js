@@ -6,6 +6,6 @@ export function createHash(password) {
 }
 
 //Login
-export function isValidatePassword(password, user){
+export function isValidatePassword(password, user) {
     return bcrypt.compareSync(password, user)
 }

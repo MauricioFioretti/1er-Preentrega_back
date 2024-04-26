@@ -32,7 +32,7 @@ const UserSchema = new mongoose.Schema(
         }
     },
     {
-        strict:false
+        strict: false
     }
 )
 

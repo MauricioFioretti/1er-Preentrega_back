@@ -1,5 +1,5 @@
 import { User } from "../models/users.modelDB.js"
-import { createHash, isValidatePassword } from '../../../config/bcrypt.js'
+import { createHash, isValidatePassword } from '../../../utils/bcrypt.js'
 import { v4 as uuidv4 } from 'uuid'
 import { CartsManager } from "./cartManagerDB.js"
 
@@ -36,7 +36,7 @@ export class UserManager {
     // Método para obtener un producto por su ID.
     async getUserByEmail(email, password) {
 
-        if (email == 'adminCoder@coder.com' && password == 'adminCod3r123') {
+        if (email == process.env.USER && password == process.env.PASSWORD) {
             let userAdmin = {
                 "firstName": 'Admin',
                 "email": email,
@@ -96,7 +96,7 @@ export class UserManager {
                     password: createHash('passwordGithub123.'),
                     cartId: uuidv4()
                 })
-                
+
                 await carts.addCart(userDeGithub.cartId)
 
                 let usuarioGithub = {

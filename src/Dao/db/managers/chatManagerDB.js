@@ -5,7 +5,7 @@ export class ChatManager {
     // Método para añadir un mensaje nuevo a la db.
     async addChat(id) {
         try {
-            let chat = await Chat.create({id: id})
+            let chat = await Chat.create({ id: id })
             return { success: true, message: `Chat agregado correctamente`, data: chat }
         }
         catch (error) {
@@ -17,9 +17,9 @@ export class ChatManager {
     // Método para obtener los mensajes.
     async getChat(id) {
         try {
-            let chat = await Chat.findOne({id: id}).populate("messages.message")
+            let chat = await Chat.findOne({ id: id }).populate("messages.message")
             return { success: true, message: `Chat obtenido correctamente`, data: chat }
-            
+
         } catch (error) {
             // Captura y manejo de errores durante la adición de carritos.
             return { success: false, message: `Error al obtener el chat`, error: error.message }
@@ -32,7 +32,6 @@ export class ChatManager {
         try {
             let resultado = await Chat.updateOne({ id: cid }, { $push: { messages: { user: mensaje.name, message: mensaje.message } } })
             //let resultado = await Chat.findOne({ id: cid })
-            //console.log(resultado)
             return { success: true, message: `El mensaje se agregó correctamente al chat.`, data: resultado }
 
         } catch (error) {

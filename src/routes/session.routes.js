@@ -1,13 +1,10 @@
 import { Router } from "express"
-import passport from "passport"
+import { getCurrentUser } from "../controllers/session.controller.js"
+import { authenticateJWT } from "../middleware/passportMiddleware.js"
 
-//Instanciamos Router() en la variable que vamos a usar routerProd
 const routerSession = Router()
 
-//Profile current
-routerSession.get('/current', passport.authenticate('jwt', {session:false}), async (req, res) => {
-    res.send(req.user)
-})
+// Ruta para obtener el perfil del usuario actual
+routerSession.get('/current', authenticateJWT, getCurrentUser)
 
 export default routerSession
-

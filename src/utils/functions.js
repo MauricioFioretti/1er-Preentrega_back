@@ -10,7 +10,7 @@ export function soloNumero(num) {
 }
 
 export function unoMenosUno(num) {
-    if(num == -1 || num == 1){
+    if (num == -1 || num == 1) {
         return parseInt(num)
     }
     return false

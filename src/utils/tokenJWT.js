@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken"
 
-export function generaToken(usuario){
+export function generaToken(usuario) {
     return jwt.sign(
         usuario,
-        'coderSecret',
+        process.env.SECRETJWT,
         { expiresIn: '24h' }
     )
 }

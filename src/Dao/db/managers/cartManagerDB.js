@@ -4,9 +4,8 @@ export class CartsManager {
 
     // Método para añadir un carrito nuevo a la db.
     async addCart(cartId) {
-        console.log('Entre al addTo cart')
         try {
-            let carrito = await Cart.create({cartId})
+            let carrito = await Cart.create({ cartId })
             return { success: true, message: `Carrito agregado correctamente`, data: carrito }
         }
         catch (error) {
@@ -19,7 +18,7 @@ export class CartsManager {
     async getCart(id) {
         try {
             // let carrito = await Cart.findById(id).populate("products.product")
-            let carrito = await Cart.findOne( {cartId: id}).populate("products.product")
+            let carrito = await Cart.findOne({ cartId: id }).populate("products.product")
 
             // Crear un nuevo array con los objetos deseados
             let nuevoArray = carrito.products.map((item) => {

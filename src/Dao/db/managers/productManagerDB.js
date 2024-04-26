@@ -2,14 +2,14 @@ import { Product } from '../models/product.modelDB.js'
 
 export class ProductManager {
     // Método para obtener todos los productos.
-    async getProducts(limit=10, page=1, sort=null, query) {
+    async getProducts(limit = 10, page = 1, sort = null, query) {
         try {
             let productos;
 
             if (query == "disponibles") {
-                productos = await Product.paginate( { status: true }, { limit, page, sort: sort ? { price: sort } : {} })
+                productos = await Product.paginate({ status: true }, { limit, page, sort: sort ? { price: sort } : {} })
             } else {
-                productos = await Product.paginate( query ? { category: query } : {}, { limit, page, sort: sort ? { price: sort } : {} })
+                productos = await Product.paginate(query ? { category: query } : {}, { limit, page, sort: sort ? { price: sort } : {} })
             }
 
             productos.docs = productos.docs.map(doc => doc.toObject())

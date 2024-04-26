@@ -20,10 +20,10 @@ export class ProductManager {
     validarPropiedades(objeto, propiedadesPermitidas = ['title', 'price', 'stock', 'description', 'thumbnail', 'code', "category", "status"]) {
         // Obtener las claves del objeto
         const clavesObjeto = Object.keys(objeto)
-    
+
         // Verificar si todas las claves del objeto están en las propiedades permitidas
         const propiedadesNoPermitidas = clavesObjeto.filter(clave => !propiedadesPermitidas.includes(clave))
-    
+
         // Si hay propiedades no permitidas, lanzar un error
         if (propiedadesNoPermitidas.length > 0) {
             throw new Error(`Propiedades no permitidas: ${propiedadesNoPermitidas.join(', ')}`)
