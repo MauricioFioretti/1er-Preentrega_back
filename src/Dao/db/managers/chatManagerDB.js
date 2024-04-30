@@ -31,7 +31,6 @@ export class ChatManager {
     async addMessageToChat(cid, mensaje) {
         try {
             let resultado = await Chat.updateOne({ id: cid }, { $push: { messages: { user: mensaje.name, message: mensaje.message } } })
-            //let resultado = await Chat.findOne({ id: cid })
             return { success: true, message: `El mensaje se agregó correctamente al chat.`, data: resultado }
 
         } catch (error) {

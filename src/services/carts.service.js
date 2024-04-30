@@ -7,7 +7,15 @@ export class CartsService {
     }
 
     async getCart(id) {
-        return await cartsManager.getCart(id)
+        let carrito = await cartsManager.getCart(id)
+
+        //Agregamos las propiedades precio total y acomodamos category para que se vea bien sin guiones
+        carrito.data.products.forEach(el => {
+            el.priceTot = el.product.price * el.quantity
+            el.product.category = el.product.category.replace(/-/g, ' ')
+        })
+
+        return carrito
     }
 
     async addProductToCart(cid, pid) {

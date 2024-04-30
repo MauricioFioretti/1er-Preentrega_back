@@ -82,7 +82,7 @@ export class CartsManager {
             let carritoEncontrado = carts.find(cart => cart.id === id)
 
             if (!carritoEncontrado) {
-                throw new Error(`El carrito con id ${id} no existe en la base de datos.`);
+                throw new Error(`El carrito con id ${id} no existe en la base de datos.`)
             }
 
             if (carritoEncontrado.products.length === 0) {
