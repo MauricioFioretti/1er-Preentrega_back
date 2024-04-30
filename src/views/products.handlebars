@@ -1,9 +1,10 @@
 <h1> Bienvenido {{firstName}}, esta es la página de productos.</h1>
-{{#if role }}
-<h4>Rol: Admin </h4>
+
+{{#eq role "Admin"}}
+    <h4>Rol: Admin </h4>
 {{else}}
-<h4>Rol: User </h4>
-{{/if}}
+    <h4>Rol: User </h4>
+{{/eq}}
 
 <form action="../auth/logout" method="get">
     <input type="submit" class="btn btn-success" value="Logout">

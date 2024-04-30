@@ -29,12 +29,17 @@ app.use(passport.initialize())
 
 //Configurar Handlebars o motor de plantilla
 const hbs = expressHandlebars.create({
-    // Opciones adicionales
-    runtimeOptions: {
+    runtimeOptions: { // Opciones adicionales
         allowProtoMethodsByDefault: true, // Permite el acceso a métodos del prototipo
         allowProtoPropertiesByDefault: true // Permite el acceso a propiedades del prototipo
     }
 })
+
+// Definir el helper "eq"
+hbs.handlebars.registerHelper('eq', function(a, b, options) {
+    return a === b ? options.fn(this) : options.inverse(this)
+})
+
 app.engine('handlebars', hbs.engine)
 app.set('view engine', 'handlebars')
 app.set('views', join(__dirname, '../views'))
