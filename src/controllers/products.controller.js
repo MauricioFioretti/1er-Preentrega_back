@@ -6,25 +6,15 @@ const productsService = new ProductsService()
 export async function getProducts(req, res) {
     try {
         const { limit = 10, page = 1, sort = null, query = '' } = req.query
+
         const productos = await productsService.getProductsService(limit, page, sort, query)
-
-        const formattedProducts = productos.payload.map(item => ({
-            id: item._id,
-            title: item.title,
-            description: item.description,
-            price: item.price,
-            category: item.category.replace(/-/g, ' '),
-            stock: item.stock,
-            disponibilidad: item.status,
-            thumbnail: item.thumbnail
-        }))
-
         const usuario = req.user
+
         res.render('products', {
             'firstName': usuario.firstName,
             'role': usuario.role,
             "cartId": usuario.cartId,
-            "array": formattedProducts,
+            "array": productos.payload,
             "valor": true
         })
     } catch (error) {

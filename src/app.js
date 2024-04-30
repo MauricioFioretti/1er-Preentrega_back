@@ -1,6 +1,6 @@
 import './config/variablesEntorno.js'
 import express, { urlencoded } from 'express'
-import { engine } from 'express-handlebars'
+import expressHandlebars from 'express-handlebars'
 import __dirname from './config/path.js'
 import { join } from 'node:path'
 import { MongoSingleton } from './Dao/db/mongoSingleton.js'
@@ -28,7 +28,14 @@ initializePassport()
 app.use(passport.initialize())
 
 //Configurar Handlebars o motor de plantilla
-app.engine('handlebars', engine())
+const hbs = expressHandlebars.create({
+    // Opciones adicionales
+    runtimeOptions: {
+        allowProtoMethodsByDefault: true, // Permite el acceso a métodos del prototipo
+        allowProtoPropertiesByDefault: true // Permite el acceso a propiedades del prototipo
+    }
+})
+app.engine('handlebars', hbs.engine)
 app.set('view engine', 'handlebars')
 app.set('views', join(__dirname, '../views'))
 

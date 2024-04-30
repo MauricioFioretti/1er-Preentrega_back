@@ -15,4 +15,4 @@ export const renderRegister = async (req, res) => {
 
 export const renderLogin = async (req, res) => {
     res.render('login')
-}
+} 

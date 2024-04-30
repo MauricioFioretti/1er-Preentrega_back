@@ -22,7 +22,7 @@ export function initializePassport() {
                     return done(respuestaAddUser.message + respuestaAddUser.error)
                 }
 
-                return done(null, respuestaAddUser.result)
+                return done(null, respuestaAddUser.message)
             } catch (error) {
                 return done(error)
             }

@@ -5,16 +5,18 @@ import { CartsManager } from "./cartManagerDB.js"
 
 const carts = new CartsManager()
 
-
 export class UserManager {
+
     // Método para agregar un nuevo usuario a la bd.
     async addUser(newUser) {
         try {
+            //Hasheo de la password, creacion del carrito y el usuario
             newUser.password = createHash(newUser.password)
             newUser.cartId = uuidv4()
             await carts.addCart(newUser.cartId)
-            let result = await User.create(newUser)
-            return { success: true, message: `El usuario ${newUser.user} ha sido agregado correctamente`, data: newUser, result: result }
+            await User.create(newUser)
+
+            return { success: true, message: `El usuario ${newUser.user} ha sido agregado correctamente` }
         }
         catch (error) {
             // Captura y manejo de errores durante la adición de un usuario.
@@ -35,36 +37,18 @@ export class UserManager {
 
     // Método para obtener un producto por su ID.
     async getUserByEmail(email, password) {
+        try {
+            let busquedaPorEmail = await User.findOne({ email }).lean().exec()
 
-        if (email == process.env.USER && password == process.env.PASSWORD) {
-            let userAdmin = {
-                "firstName": 'Admin',
-                "email": email,
-                "role": "Admin"
+            if (busquedaPorEmail && isValidatePassword(password, busquedaPorEmail.password)) {
+                delete busquedaPorEmail.password //Eliminamos la password para no enviar datos sensibles al front.
+                return { success: true, message: `El usuario con email: ${email} se encontró exitosamente.`, data: busquedaPorEmail }
+            } else {
+                throw new Error(`El usuario o contraseña son incorrectos.`)
             }
-            return { success: true, message: `El usuario con email: ${email} se encontró exitosamente.`, data: userAdmin }
-
-        } else {
-            try {
-                let busquedaPorEmail = await User.findOne({ email })
-                let usuario = {
-                    "firstName": busquedaPorEmail.firstName,
-                    "email": busquedaPorEmail.email,
-                    "cartId": busquedaPorEmail.cartId
-                }
-
-                if (busquedaPorEmail && isValidatePassword(password, busquedaPorEmail.password)) {
-                    return { success: true, message: `El usuario con email: ${email} se encontró exitosamente.`, data: usuario }
-                } else if (busquedaPorEmail && password == busquedaPorEmail.password) {
-                    return { success: true, message: `El usuario con email: ${email} se encontró exitosamente.`, data: usuario }
-                } else {
-                    throw new Error(`El usuario o contraseña son incorrectos.`)
-                }
-
-            } catch (error) {
-                // Captura y manejo de errores durante la obtención de un usuario por email y contra.
-                return { success: false, message: `Error al obtener el usuario. `, error: error }
-            }
+        } catch (error) {
+            // Captura y manejo de errores durante la obtención de un usuario por email y contra.
+            return { success: false, message: `Error al obtener el usuario. `, error: error }
         }
     }
 
@@ -73,39 +57,22 @@ export class UserManager {
         try {
             let email = profile.email
             let firstName = profile.name
+            if (!email) { email = profile.id + '@gmail.com' }
+            if (!firstName) { firstName = profile.login }
 
-            if (!email) {
-                email = profile.id + '@gmail.com'
-            } if (!firstName) {
-                firstName = profile.login
-            }
-
-            let userDeGithub = await User.findOne({ email })
-
-            if (userDeGithub) {
-                let usuarioGithub = {
-                    "firstName": userDeGithub.firstName,
-                    "email": userDeGithub.email,
-                    "cartId": userDeGithub.cartId
-                }
-                return { success: true, message: `El usuario con email: ${email} se encontró exitosamente.`, data: usuarioGithub }
-            } else {
-                userDeGithub = await User.create({
-                    firstName,
-                    email,
-                    password: createHash('passwordGithub123.'),
-                    cartId: uuidv4()
-                })
-
+            let userDeGithub = await User.findOne({ email }).lean().exec()
+            if (!userDeGithub) {
+                //Agregamos el usuario y el carrito a la db
+                userDeGithub = await User.create({ firstName, email, password: createHash('passwordGithub123.'), cartId: uuidv4() })
                 await carts.addCart(userDeGithub.cartId)
 
-                let usuarioGithub = {
-                    "firstName": userDeGithub.firstName,
-                    "email": userDeGithub.email,
-                    "cartId": userDeGithub.cartId
-                }
+                userDeGithub = userDeGithub.toObject() //Transformamos el objeto de Mongo en un objeto plano de js.
+                delete userDeGithub.password //Eliminamos la password para no enviar datos sensibles al front.
 
-                return { success: true, message: `El usuario con email: ${email} se encontró exitosamente.`, data: usuarioGithub }
+                return { success: true, message: `El usuario con email: ${email} se encontró exitosamente.`, data: userDeGithub }
+            } else {
+                delete userDeGithub.password //Eliminamos la password para no enviar datos sensibles al front.
+                return { success: true, message: `El usuario con email: ${email} se encontró exitosamente.`, data: userDeGithub }
             }
         } catch (error) {
             // Captura y manejo de errores durante la obtención de un usuario por email y contra.
