@@ -1,4 +1,5 @@
 import { CartsManager } from "../Dao/db/managers/cartManagerDB.js"
+import { cartServiceDTO } from "./dto/carts.service.dto.js"
 const cartsManager = new CartsManager()
 
 export class CartsService {
@@ -8,14 +9,7 @@ export class CartsService {
 
     async getCart(id) {
         let carrito = await cartsManager.getCart(id)
-
-        //Agregamos las propiedades precio total y acomodamos category para que se vea bien sin guiones
-        carrito.data.products.forEach(el => {
-            el.priceTot = el.product.price * el.quantity
-            el.product.category = el.product.category.replace(/-/g, ' ')
-        })
-
-        return carrito
+        return cartServiceDTO(carrito)
     }
 
     async addProductToCart(cid, pid) {

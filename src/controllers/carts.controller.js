@@ -20,7 +20,11 @@ export const getCart = async (req, res) => {
         const carrito = await cartsService.getCart(id)
 
         if (carrito.success) {
-            res.render('cart', { "array": carrito.data.products, "valor": true })
+            res.render('cart', {
+                "array": carrito.data.products,
+                "cartId": id,
+                "valor": true
+            })
         } else {
             res.status(404).json({ message: carrito.message, error: carrito.error })
         }

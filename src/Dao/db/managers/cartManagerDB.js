@@ -68,9 +68,9 @@ export class CartsManager {
     // Método para eliminar un producto del carrito según el id del carrito y del producto.
     async deleteProductToCart(cid, pid) {
         try {
-            let result = await Cart.updateOne({ cartId: cid }, { $pull: { products: { _id: pid } } })
+            let result = await Cart.updateOne({ cartId: cid }, { $pull: { products: { product: pid } } })
+            
             return { success: true, message: `El producto con id ${pid} se eliminó correctamente.`, data: result }
-
         } catch (error) {
             // Captura y manejo de errores durante la obtención de un carrito por ID.
             return { success: false, message: `Error al eliminar el producto por ID.`, error: error }

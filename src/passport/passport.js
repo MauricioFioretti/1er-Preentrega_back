@@ -39,7 +39,6 @@ export function initializePassport() {
                 if (!respuestaLogin.success) {
                     return done(respuestaLogin.message + respuestaLogin.error)
                 }
-
                 return done(null, respuestaLogin.data)
             } catch (error) {
                 return done(error)
@@ -59,6 +58,36 @@ export function initializePassport() {
         }
     }))
 
+    //Estrategia de User usando Jwt
+    passport.use('user', new JwtStrategy({
+        jwtFromRequest: ExtracJwt.fromExtractors([cookieExtractor]),
+        secretOrKey: process.env.SECRETJWT
+    }, async (jwt_payload, done) => {
+        try {
+            if (jwt_payload.role != 'User'){
+                throw new Error('Usted no esta autorizado ya que no tiene una sesión activa como usuario.')
+            }
+            return done(null, jwt_payload)
+        } catch (error) {
+            return done("Error en autenticar usuario usando JWT", error)
+        }
+    }))
+
+    //Estrategia de Admin usando Jwt
+    passport.use('admin', new JwtStrategy({
+        jwtFromRequest: ExtracJwt.fromExtractors([cookieExtractor]),
+        secretOrKey: process.env.SECRETJWT
+    }, async (jwt_payload, done) => {
+        try {
+            if (jwt_payload.role != 'Admin'){
+                throw new Error('Usted no esta autorizado ya que no tiene una sesión activa como Administrador.')
+            }
+            return done(null, jwt_payload)
+        } catch (error) {
+            return done("Error en autenticar administrador usando JWT", error)
+        }
+    }))
+
     //Estrategia de registro-login github
     passport.use('github', new github.Strategy(
         {
@@ -70,11 +99,10 @@ export function initializePassport() {
             try {
                 let usuario = await user.getUserByGithub(profile._json)
 
-                if (!usuario.success) {
-                    return done(usuario.message + usuario.error)
-                }
-                return done(null, usuario.data)
+                if (!usuario.success) { return done(usuario.message + usuario.error) }
 
+                return done(null, usuario.data)
+                
             } catch (error) {
                 return done(error)
             }
