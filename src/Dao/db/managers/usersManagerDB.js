@@ -2,25 +2,48 @@ import { User } from "../models/users.modelDB.js"
 import { createHash, isValidatePassword } from '../../../utils/bcrypt.js'
 import { v4 as uuidv4 } from 'uuid'
 import { CartsManager } from "./cartManagerDB.js"
+import { generateUserEmailErrorInfo, generateUserErrorInfo } from "../../../services/errors/messages/userCreationError.message.js"
+import EErrors from "../../../services/errors/errors-enum.js"
+import CustomError from "../../../services/errors/customError.js"
 
 const carts = new CartsManager()
+// const customError = new CustomError()
 
 export class UserManager {
 
     // Método para agregar un nuevo usuario a la bd.
     async addUser(newUser) {
-        try {
-            //Hasheo de la password, creacion del carrito y el usuario
-            newUser.password = createHash(newUser.password)
-            newUser.cartId = uuidv4()
+        //try {
+        //Hasheo de la password, creacion del carrito y el usuario
+        newUser.password = createHash(newUser.password)
+        newUser.cartId = uuidv4()
+        let email = newUser.email
+        let firstName = newUser.firstName
+
+        if (!newUser.firstName || !newUser.email) {
+            //Custom error
+            CustomError.createError({
+                name: 'User creation Error',
+                cause: generateUserErrorInfo(firstName, email),
+                message: 'Error tratando de crear el usuario',
+                code: EErrors.INVALID_TYPE_ERROR
+            })
+        }
+
+        let busquedaPorEmail = await User.findOne({ email }).lean().exec()
+
+        if (!busquedaPorEmail) {
             await carts.addCart(newUser.cartId)
             await User.create(newUser)
-
             return { success: true, message: `El usuario ${newUser.user} ha sido agregado correctamente` }
-        }
-        catch (error) {
-            // Captura y manejo de errores durante la adición de un usuario.
-            return { success: false, message: `Error al agregar el usuario. `, error: error }
+        } else {
+            //Custom error
+            CustomError.createError({
+                name: 'User creation Error',
+                cause: generateUserEmailErrorInfo(email),
+                message: 'Error tratando de crear el usuario',
+                code: EErrors.DATABASE_ERROR
+            })
         }
     }
 

@@ -1,5 +1,9 @@
 import { Product } from '../models/product.modelDB.js'
 
+import { generateProductByIdInfo, generateUpdateProductInfo } from "../../../services/errors/messages/userCreationError.message.js"
+import EErrors from "../../../services/errors/errors-enum.js"
+import CustomError from "../../../services/errors/customError.js"
+
 export class ProductManager {
     // Método para obtener todos los productos.
     async getProducts(limit = 10, page = 1, sort = null, query) {
@@ -33,18 +37,18 @@ export class ProductManager {
 
     // Método para obtener un producto por su ID.
     async getProductById(id) {
-        try {
-            let busquedaPorId = await Product.findById(id)
+        let busquedaPorId = await Product.findById(id)
 
-            if (busquedaPorId) {
-                return { success: true, message: `El producto con id ${id} se encontró exitosamente.`, data: busquedaPorId }
-            } else {
-                throw new Error(`El producto con id ${id} no ha sido encontrado.`)
-            }
-        }
-        catch (error) {
-            // Captura y manejo de errores durante la obtención de un producto por ID.
-            return { success: false, message: `Error al obtener el producto por ID.`, error: error }
+        if (!busquedaPorId) {
+            //Custom error
+            CustomError.createError({
+                name: 'Error al buscar producto por id',
+                cause: generateProductByIdInfo(id),
+                message: 'Error al buscar producto por id',
+                code: EErrors.INVALID_TYPE_ERROR
+            })
+        } else {
+            return { success: true, message: `El producto con id ${id} se encontró exitosamente.`, data: busquedaPorId }
         }
     }
 
@@ -54,7 +58,13 @@ export class ProductManager {
             let resultado = await Product.updateOne({ "_id": id }, camposActualizados)
 
             if (resultado.matchedCount === 0) {
-                throw new Error(`El producto con id ${id} no ha sido encontrado.`)
+                //Custom error
+                CustomError.createError({
+                    name: 'Error al actualizar el producto.',
+                    cause: generateUpdateProductInfo(id, camposActualizados),
+                    message: 'Error al actualizar el producto.',
+                    code: EErrors.INVALID_TYPE_ERROR
+                })
             } else {
                 let busquedaPorId = await Product.findById(id)
                 return { success: true, message: `El producto con id ${id} ha sido actualizado.`, data: busquedaPorId }
@@ -68,19 +78,20 @@ export class ProductManager {
 
     // Método para eliminar un producto por su ID.
     async deleteProduct(id) {
-        try {
-            let resultado = await Product.deleteOne({ "_id": id })
+        let resultado = await Product.deleteOne({ "_id": id })
 
-            if (resultado.deletedCount === 0) {
-                throw new Error(`El producto con id ${id} no ha sido encontrado.`)
-            } else {
-                return { success: true, message: `El producto con id ${id} ha sido eliminado correctamente de la base de datos.` }
-            }
+        if (resultado.deletedCount === 0) {
+            //Custom error
+            CustomError.createError({
+                name: 'Error al eliminar el producto por id. No se ha encontrado.',
+                cause: generateProductByIdInfo(id),
+                message: 'Error al eliminar el producto por id. No se ha encontrado.',
+                code: EErrors.INVALID_TYPE_ERROR
+            })
+        } else {
+            return { success: true, message: `El producto con id ${id} ha sido eliminado correctamente de la base de datos.` }
         }
-        catch (error) {
-            // Captura y manejo de errores durante la eliminación del producto.
-            return { success: false, message: `Error al eliminar el producto.`, error: error }
-        }
+
     }
 }
 

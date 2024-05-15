@@ -8,6 +8,8 @@ import passport from 'passport'
 import { initializePassport } from './passport/passport.js'
 import cookieParser from 'cookie-parser'
 import { server, app } from "./utils/socket.js"
+import compression from 'compression'
+import errorHandler from './middleware/errors/index.js'
 
 import routerProd from './routes/products.routes.js'
 import routerCart from './routes/carts.routes.js'
@@ -15,6 +17,10 @@ import routerChat from './routes/chat.routes.js'
 import routerViews from './routes/views.routes.js'
 import routerAuth from './routes/auth.routes.js'
 import routerSession from './routes/session.routes.js'
+import routerMocking from './routes/mockingproducts.routes.js'
+
+// Configurar compression 
+app.use(compression())
 
 // Configurar Express 
 app.use(express.json())
@@ -55,6 +61,9 @@ app.use('/api/session', routerSession)
 
 app.use('/', routerViews)
 app.use('/auth', routerAuth)
+app.use("/", routerMocking)
+
+app.use(errorHandler)
 
 app.get('*', (req, res) => {
     res.status(404).send('La ruta no existe')

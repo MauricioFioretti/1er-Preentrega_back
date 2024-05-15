@@ -25,6 +25,6 @@ export class CartsService {
     }
 
     async deleteProductFromCart(cid, pid) {
-        return await cartsManager.deleteProductToCart(cid, pid)
+        return await cartsManager.deleteProductToCart(cid, pid) 
     }
 }
