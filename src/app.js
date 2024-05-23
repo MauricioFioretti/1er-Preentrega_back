@@ -10,6 +10,7 @@ import cookieParser from 'cookie-parser'
 import { server, app } from "./utils/socket.js"
 import compression from 'compression'
 import errorHandler from './middleware/errors/index.js'
+import { addLogger } from "./config/logger.js"
 
 import routerProd from './routes/products.routes.js'
 import routerCart from './routes/carts.routes.js'
@@ -18,6 +19,7 @@ import routerViews from './routes/views.routes.js'
 import routerAuth from './routes/auth.routes.js'
 import routerSession from './routes/session.routes.js'
 import routerMocking from './routes/mockingproducts.routes.js'
+import routerLogger from './routes/logger.routes.js'
 
 // Configurar compression 
 app.use(compression())
@@ -42,7 +44,7 @@ const hbs = expressHandlebars.create({
 })
 
 // Definir el helper "eq"
-hbs.handlebars.registerHelper('eq', function(a, b, options) {
+hbs.handlebars.registerHelper('eq', function (a, b, options) {
     return a === b ? options.fn(this) : options.inverse(this)
 })
 
@@ -53,6 +55,9 @@ app.set('views', join(__dirname, '../views'))
 //Configurar archivos estaticos de la carpeta public
 app.use('/', express.static(join(__dirname, '../public')))
 
+//Configurar middleware logger
+app.use(addLogger)
+
 //Routes o endpoints
 app.use('/api/products', routerProd)
 app.use('/api/carts', routerCart)
@@ -62,6 +67,7 @@ app.use('/api/session', routerSession)
 app.use('/', routerViews)
 app.use('/auth', routerAuth)
 app.use("/", routerMocking)
+app.use("/", routerLogger)
 
 app.use(errorHandler)
 

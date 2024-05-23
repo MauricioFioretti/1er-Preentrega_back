@@ -7,9 +7,13 @@ export const addCart = async (req, res) => {
         if (cart.success) {
             res.status(201).json({ message: cart.message, data: cart.data })
         } else {
+            req.logger.warning(`No se pudo añadir el carrito - Motivo: ${cart.error} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`)
+
             res.status(500).json({ message: cart.message, error: cart.error })
         }
     } catch (error) {
+        req.logger.error(`${req.method} ${req.url} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - Error interno del servidor - Error: ${error.message}`)
+
         res.status(500).json({ message: "Error interno del servidor", error: error })
     }
 }
@@ -26,9 +30,13 @@ export const getCart = async (req, res) => {
                 "valor": true
             })
         } else {
+            req.logger.warning(`No se pudo obtener el carrito - Motivo: ${carrito.error} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`)
+
             res.status(404).json({ message: carrito.message, error: carrito.error })
         }
     } catch (error) {
+        req.logger.error(`${req.method} ${req.url} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - Error interno del servidor - Error: ${error.message}`)
+
         res.status(500).json({ message: "Error interno del servidor", error: error })
     }
 }
@@ -41,9 +49,13 @@ export const addProductToCart = async (req, res) => {
         if (addToCart.success) {
             res.status(201).json({ message: addToCart.message, data: addToCart.data })
         } else {
+            req.logger.warning(`No se pudo añadir el producto al carrito - Motivo: ${addToCart.error} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`)
+
             res.status(404).json({ message: addToCart.message, error: addToCart.error })
         }
     } catch (error) {
+        req.logger.error(`${req.method} ${req.url} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - Error interno del servidor - Error: ${error.message}`)
+
         res.status(500).json({ message: "Error interno del servidor", error: error })
     }
 }
@@ -56,9 +68,13 @@ export const updateCart = async (req, res) => {
         if (updateCart.success) {
             res.status(201).json({ message: updateCart.message, data: updateCart.data })
         } else {
+            req.logger.warning(`No se pudo actualizar el carrito - Motivo: ${updateCart.error} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`)
+
             res.status(404).json({ message: updateCart.message, error: updateCart.error })
         }
     } catch (error) {
+        req.logger.error(`${req.method} ${req.url} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - Error interno del servidor - Error: ${error.message}`)
+
         res.status(500).json({ message: "Error interno del servidor", error: error })
     }
 }
@@ -72,9 +88,13 @@ export const updateQuantity = async (req, res) => {
         if (updateQuantity.success) {
             res.status(201).json({ message: updateQuantity.message, data: updateQuantity.data })
         } else {
+            req.logger.warning(`No se pudo actualizar la cantidad del producto - Motivo: ${updateQuantity.error} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`)
+
             res.status(404).json({ message: updateQuantity.message, error: updateQuantity.error })
         }
     } catch (error) {
+        req.logger.error(`${req.method} ${req.url} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - Error interno del servidor - Error: ${error.message}`)
+
         res.status(500).json({ message: "Error interno del servidor", error: error })
     }
 }
@@ -87,9 +107,13 @@ export const deleteProductFromCart = async (req, res) => {
         if (deleteToCart.success) {
             res.status(200).json({ message: deleteToCart.message, data: deleteToCart.data })
         } else {
+            req.logger.warning(`No se pudo eliminar el carrito - Motivo: ${deleteToCart.error} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`)
+
             res.status(404).json({ message: deleteToCart.message, error: deleteToCart.error })
         }
     } catch (error) {
+        req.logger.error(`${req.method} ${req.url} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - Error interno del servidor - Error: ${error.message}`)
+        
         res.status(500).json({ message: "Error interno del servidor", error: error })
     }
 }

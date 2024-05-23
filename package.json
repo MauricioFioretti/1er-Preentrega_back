@@ -3,11 +3,16 @@
   "version": "1.0.0",
   "main": "app.js",
   "type": "module",
-  "scripts": {
+  "__scriptsComentario__": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "sass-watch": "sass --no-source-map --watch src/sass/styles.scss src/public/css/styles.css",
     "nodemon-watch": "nodemon ./src/app.js",
     "start": "npm-run-all --parallel sass-watch nodemon-watch",
+    "crear": "node ./src/functionTest/functionFileJSON.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./src/app.js",
     "crear": "node ./src/functionTest/functionFileJSON.js"
   },
   "keywords": [],

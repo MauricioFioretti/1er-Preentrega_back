@@ -5,6 +5,8 @@ export const getUsersController = async (req, res) => {
         const usuarios = await getUsers()
         res.send(usuarios)
     } catch (error) {
+        req.logger.error(`${req.method} ${req.url} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - Error interno del servidor - Error: ${error.message}`)
+        
         res.status(500).send('Error interno del servidor')
     }
 }

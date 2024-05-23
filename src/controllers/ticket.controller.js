@@ -12,6 +12,8 @@ export async function generateTicket(req, res) {
         })
 
     } catch (error) {
+        req.logger.error(`${req.method} ${req.url} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - Error al obtener el ticket - Error: ${error.message}`)
+
         res.status(500).json({ message: "Error al obtener el ticket", error: error.message })
     }
 }
