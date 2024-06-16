@@ -16,5 +16,15 @@ export const renderRegister = async (req, res) => {
 }
 
 export const renderLogin = async (req, res) => {
-    res.render('login')
+    let message = req.query.message
+    let error = req.query.error
+    let alertScript = ''
+
+    if (message) {
+        alertScript = `<script>alert('${message}')</script>`
+    } else if (error) {
+        alertScript = `<script>alert('${error}')</script>`
+    }
+
+    res.render('login', { alertScript })
 } 

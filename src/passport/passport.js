@@ -46,6 +46,18 @@ export function initializePassport() {
         }
     ))
 
+    //Estrategia de Restablecer contraseña
+    passport.use('resetContra', new JwtStrategy({
+        jwtFromRequest: ExtracJwt.fromExtractors([cookieExtractor]),
+        secretOrKey: process.env.SECRETJWT
+    }, async (jwt_payload, done) => {
+        try {
+            return done(null, jwt_payload)
+        } catch (error) {
+            return done("Error  en JWT  passport", error)
+        }
+    }))
+
     //Estrategia de Jwt
     passport.use('jwt', new JwtStrategy({
         jwtFromRequest: ExtracJwt.fromExtractors([cookieExtractor]),
@@ -64,7 +76,7 @@ export function initializePassport() {
         secretOrKey: process.env.SECRETJWT
     }, async (jwt_payload, done) => {
         try {
-            if (jwt_payload.role != 'User'){
+            if (jwt_payload.role !== 'User' && jwt_payload.role !== 'Premium'){
                 throw new Error('Usted no esta autorizado ya que no tiene una sesión activa como usuario.')
             }
             return done(null, jwt_payload)
@@ -85,6 +97,21 @@ export function initializePassport() {
             return done(null, jwt_payload)
         } catch (error) {
             return done("Error en autenticar administrador usando JWT", error)
+        }
+    }))
+
+    //Estrategia de Admin usando Jwt
+    passport.use('admin-premium', new JwtStrategy({
+        jwtFromRequest: ExtracJwt.fromExtractors([cookieExtractor]),
+        secretOrKey: process.env.SECRETJWT
+    }, async (jwt_payload, done) => {
+        try {
+            if (jwt_payload.role != 'Admin' && jwt_payload.role != 'Premium'){
+                throw new Error('Usted no esta autorizado ya que no tiene una sesión activa como Administrador o Premium.')
+            }
+            return done(null, jwt_payload)
+        } catch (error) {
+            return done("Error en autenticar administrador o premium usando JWT", error)
         }
     }))
 

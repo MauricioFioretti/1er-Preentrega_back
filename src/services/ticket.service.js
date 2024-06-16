@@ -19,7 +19,9 @@ export class TicketService {
 
             return retorno
         } else {
-            console.log("No se pudo completar la compra ya que no hay productos en el carrito o no hay suficiente stock de ninguno de ellos.") 
+            let retorno = {totalYStock}
+
+            return retorno
         }
     }
 }

@@ -1,13 +1,29 @@
 <h1> Bienvenido {{firstName}}, esta es la página de productos.</h1>
 
-{{#eq role "Admin"}}
-    <h4>Rol: Admin </h4>
-{{else}}
+{{#eq role "Premium"}}
+    <h4>Rol: Premium </h4>
+{{/eq}} 
+{{#eq role "User"}}
     <h4>Rol: User </h4>
 {{/eq}}
+{{#eq role "Admin"}}
+    <h4>Rol: Admin </h4>
+{{/eq}}
+
+<form action="/api/carts/{{cartId}}" method="get">
+    <input type="submit" class="btn btn-success" value="Carrito">
+</form>
 
 <form action="../auth/logout" method="get">
     <input type="submit" class="btn btn-success" value="Logout">
+</form>
+
+<form action="/api/session/current" method="get">
+    <input type="submit" class="btn btn-success" value="Ver Perfil">
+</form>
+
+<form action="/api/users/premium/{{userId}}" method="get">
+    <input type="submit" class="btn btn-success" value="Cambiar user/premium">
 </form>
 
 <div class="products">

@@ -5,9 +5,16 @@ const ticket = new TicketService
 export async function generateTicket(req, res) {
     try {
         let respuesta = await ticket.generateTicketService(req.user.cartId, req.user.email)
+
+        if(!respuesta){
+            return res.render('ticket',{ 
+                ticket: {},
+                array: {}
+            })
+        }
         
         res.render('ticket',{ 
-            ticket: respuesta.datosTicketFormat,
+            ticket: respuesta.datosTicketFormat ? respuesta.datosTicketFormat: {},
             array: respuesta.totalYStock.sinStock
         })
 

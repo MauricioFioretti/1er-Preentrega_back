@@ -45,7 +45,6 @@ export function cantidadStock(productos, cid) {
             productosStock.sinStock.push(element)
         }
     })
-
     productosStock.acumulador = acumulador
 
     return productosStock

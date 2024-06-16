@@ -2,7 +2,7 @@ import express from "express"
 
 const routerLogger = express.Router()
 
-routerLogger.get('/loggerTest', (req, res)=>{
+routerLogger.get('/', (req, res)=>{
     req.logger.error(`${req.method} ${req.url} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - Error: Error`)
 
     req.logger.fatal(`${req.method} en ${req.url} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`)

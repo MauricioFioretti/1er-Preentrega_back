@@ -4,7 +4,7 @@ import { generateProduct } from "../mocks/products.mocks.js"
 const routerMocking = express.Router()
 
 //Mocking
-routerMocking.get('/mockingproducts', (req, res) =>{
+routerMocking.get('/', (req, res) =>{
 
     let productos = []
 

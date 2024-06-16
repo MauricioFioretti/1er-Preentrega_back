@@ -13,7 +13,6 @@ export class UserManager {
 
     // Método para agregar un nuevo usuario a la bd.
     async addUser(newUser) {
-        //try {
         //Hasheo de la password, creacion del carrito y el usuario
         newUser.password = createHash(newUser.password)
         newUser.cartId = uuidv4()
@@ -75,11 +74,71 @@ export class UserManager {
         }
     }
 
+    // Método para verificar si existe un email en la db.
+    async validateEmail(email) {
+        try {
+            let busquedaEmail = await User.findOne({ email }).lean().exec()
+
+            if (!busquedaEmail) {
+                throw new Error(`El usuario no existe.`)
+            } else {
+                return { success: true, message: `El usuario con email: ${email} se encontró exitosamente.` }
+            }
+        } catch (error) {
+            // Captura y manejo de errores durante la obtención de un usuario por email y contra.
+            return { success: false, message: `Error al obtener el usuario. `, error: error }
+        }
+    }
+
+    // Método para actualizar password.
+    async updatePassword(email, newPassword) {
+        try {
+            let busquedaPorEmail = await User.findOne({ email }).lean().exec()
+
+            if (isValidatePassword(newPassword, busquedaPorEmail.password)) {
+                return { success: false, message: 'No se puede colocar la misma contraseña.' }
+            }
+
+            let hashedPassword = createHash(newPassword)
+            let resultadoActualizacion = await User.updateOne({ email }, { password: hashedPassword }).lean().exec()
+
+            if (!resultadoActualizacion) {
+                throw new Error(`Ocurrió un problema al actualizar la contraseña.`)
+            } else {
+                return { success: true, message: `El usuario con email: ${email} actualizó la contraseña exitosamente.` }
+            }
+        } catch (error) {
+            // Captura y manejo de errores durante la obtención de un usuario por email y contra.
+            return { success: false, message: `Error al actualizar la contraseña. `, error: error }
+        }
+    }
+
+    // Método para actualizar rol de usuario.
+    async updateUser(uid) {
+        try {
+
+            let busquedaPorId = await User.findById(uid)
+
+            if(busquedaPorId.role === 'User'){
+                await User.updateOne({ _id: uid }, {role: 'Premium'})
+            } else if (busquedaPorId.role === 'Premium'){
+                await User.updateOne({ _id: uid }, {role: 'User'})
+            }
+
+            return await User.findById(uid)
+
+        } catch (error) {
+            // Captura y manejo de errores
+            return { success: false, message: `Error al actualizar el rol de usuario. `, error: error }
+        }
+    }
+
+
     // Método para obtener un usuario de github.
     async getUserByGithub(profile) {
         try {
             let email = profile.email
-            let userDeGithub;
+            let userDeGithub
 
             //Buscamos el usuario segun los 2 email posibles
             if (!email) {

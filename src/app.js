@@ -20,6 +20,8 @@ import routerAuth from './routes/auth.routes.js'
 import routerSession from './routes/session.routes.js'
 import routerMocking from './routes/mockingproducts.routes.js'
 import routerLogger from './routes/logger.routes.js'
+import routerRecuperar from './routes/recuperacion.routes.js'
+import routerUser from './routes/users.routes.js'
 
 // Configurar compression 
 app.use(compression())
@@ -59,15 +61,18 @@ app.use('/', express.static(join(__dirname, '../public')))
 app.use(addLogger)
 
 //Routes o endpoints
-app.use('/api/products', routerProd)
+app.use('/api/users', routerUser)
 app.use('/api/carts', routerCart)
 app.use('/api/chat', routerChat)
 app.use('/api/session', routerSession)
+app.use('/api/recuperacion-contra', routerRecuperar)
 
 app.use('/', routerViews)
+app.use('/products', routerProd)
+
 app.use('/auth', routerAuth)
-app.use("/", routerMocking)
-app.use("/", routerLogger)
+app.use('/mockingproducts', routerMocking)
+app.use('/loggerTest', routerLogger)
 
 app.use(errorHandler)
 

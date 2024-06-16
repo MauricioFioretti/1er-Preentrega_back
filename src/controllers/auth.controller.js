@@ -11,7 +11,7 @@ export const failedRegister = (req, res) => {
 export const loginUser = async (req, res) => {
     let token = generaToken(req.user)
     res.cookie(process.env.SECRETCOOKIE, token, { httpOnly: true })
-    res.redirect('/api/products')
+    res.redirect('/products')
 }
 
 export const failedLogin = (req, res) => {
@@ -25,5 +25,5 @@ export const logoutUser = (req, res) => {
 export const callbackGithub = (req, res) => {
     let token = generaToken(req.user)
     res.cookie(process.env.SECRETCOOKIE, token, { httpOnly: true })
-    res.redirect('/api/products')
+    res.redirect('/products')
 }

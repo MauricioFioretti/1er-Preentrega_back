@@ -38,7 +38,6 @@ export class ProductManager {
     // Método para obtener un producto por su ID.
     async getProductById(id) {
         let busquedaPorId = await Product.findById(id)
-
         if (!busquedaPorId) {
             //Custom error
             CustomError.createError({

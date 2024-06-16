@@ -16,6 +16,7 @@ export async function getProducts(req, res) {
             'firstName': usuario.firstName,
             'role': usuario.role,
             "cartId": usuario.cartId,
+            'userId': usuario._id,
             "array": productos.payload,
             "valor": true
         })
@@ -52,8 +53,9 @@ export async function getProductById(req, res) {
 export async function addProduct(req, res) {
     try {
         req.logger.info(`Método: Añadir un producto - Email: ${req.user.email} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`)
-
         const solicitud = req.body
+        solicitud.owner = req.user._id 
+
         const producto = await productsService.addProductService(solicitud)
 
         if (producto.success) {
@@ -79,6 +81,13 @@ export async function updateProduct(req, res) {
         req.logger.info(`Método: Actualizar un producto - Email: ${req.user.email} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`)
 
         const { pid } = req.params
+
+        const productoUpdate = await productsService.getProductByIdService(pid)
+
+        if(req.user.role == 'Premium' && productoUpdate.data.owner !== req.user._id){
+            return res.status(404).json({ message: 'No se pudo actulizar el producto solicitado.', error: 'Usted no puede editar productos que no sean creados por usted.' })
+        }
+
         const producto = await productsService.updateProductService(pid, req.body)
 
         if (producto.success) {
@@ -104,6 +113,13 @@ export async function deleteProduct(req, res) {
         req.logger.info(`Método: Eliminar un producto - Email: ${req.user.email} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`)
 
         const { pid } = req.params
+
+        const productoDelete = await productsService.getProductByIdService(pid)
+
+        if(req.user.role == 'Premium' && productoDelete.data.owner !== req.user._id){
+            return res.status(404).json({ message: 'No se pudo eliminar el producto solicitado.', error: 'Usted no puede eliminar productos que no sean creados por usted.' })
+        }
+
         const respuesta = await productsService.deleteProductService(pid)
 
         if (respuesta.success) {

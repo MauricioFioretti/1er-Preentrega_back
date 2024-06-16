@@ -1,5 +1,7 @@
 import { CartsService } from "../services/carts.service.js"
+import { ProductsService } from "../services/products.service.js"
 const cartsService = new CartsService()
+const productsService = new ProductsService()
 
 export const addCart = async (req, res) => {
     try {
@@ -44,7 +46,14 @@ export const getCart = async (req, res) => {
 export const addProductToCart = async (req, res) => {
     try {
         const cid = req.params.cid
-        const pid = req.params.pid
+        const pid = req.params.pid        
+
+        const producto = await productsService.getProductByIdService(pid)
+
+        if (producto.data.owner === req.user._id) {
+            return res.status(404).json({ message: 'No se pueden agregar productos que haya creado el mismo usuario.', error: 'Error al agregar producto.' })
+        }
+
         const addToCart = await cartsService.addProductToCart(cid, pid)
         if (addToCart.success) {
             res.status(201).json({ message: addToCart.message, data: addToCart.data })
@@ -113,7 +122,7 @@ export const deleteProductFromCart = async (req, res) => {
         }
     } catch (error) {
         req.logger.error(`${req.method} ${req.url} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - Error interno del servidor - Error: ${error.message}`)
-        
+
         res.status(500).json({ message: "Error interno del servidor", error: error })
     }
 }
