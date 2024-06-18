@@ -1,8 +1,11 @@
-import { getUsers } from "../services/views.service.js"
+import { UsersService } from "../services/views.service.js"
+
+//Instanciamos UsersService()
+const user = new UsersService()
 
 export const getUsersController = async (req, res) => {
     try {
-        const usuarios = await getUsers()
+        const usuarios = await user.getUsers()
         res.send(usuarios)
     } catch (error) {
         req.logger.error(`${req.method} ${req.url} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - Error interno del servidor - Error: ${error.message}`)

@@ -1,10 +1,12 @@
 import express from "express"
-import { authenticateJWT } from "../middleware/passportMiddleware.js"
-import { toggleUserRoleController } from "../controllers/users.controller.js"
+import { authenticateAdmin, authenticateJWT } from "../middleware/passportMiddleware.js"
+import { getUsers, toggleUserRoleController } from "../controllers/users.controller.js"
 
 const routerUser = express.Router()
 
 routerUser.get('/premium/:uid', authenticateJWT, toggleUserRoleController)
+
+routerUser.get('/', authenticateJWT, authenticateAdmin, getUsers)
 
 export default routerUser
 
