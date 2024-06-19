@@ -1,0 +1,43 @@
+<div class="products">
+    {{#each array}}
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">Nombre: {{this.firstName}}</h5>
+            <p class="card-price">Email: {{this.email}}</p>
+            <p class="card-category">
+                Rol: {{this.role}}
+                <form action='/api/users/premium/{{this.id}}' method="get">
+                    <input type="submit" class="btn btn-primary" value="Cambiar rol">
+                </form>
+            </p>
+            <div>
+                <form action='/api/users/delete/{{this.id}}/{{this.email}}' method="get">
+                    <input type="submit" class="btn btn-danger" value="Eliminar usuario">
+                </form>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</div>
+
+<div>
+    <form action="/products" method="get">
+        <input type="submit" class="btn btn-success" value="Ir a productos">
+    </form>
+</div>
+
+
+<script>
+    function premium(id) {
+        // Realizar la solicitud GET al endpoint del carrito.
+        let url = `/api/users/premium/${id}`
+        console.log(url)
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({}),
+        })
+    }
+</script>

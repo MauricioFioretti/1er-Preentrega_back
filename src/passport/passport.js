@@ -39,6 +39,7 @@ export function initializePassport() {
                 if (!respuestaLogin.success) {
                     return done(respuestaLogin.message + respuestaLogin.error)
                 }
+
                 return done(null, respuestaLogin.data)
             } catch (error) {
                 return done(error)

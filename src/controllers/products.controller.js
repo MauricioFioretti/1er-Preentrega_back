@@ -1,7 +1,10 @@
 import { ProductsService } from "../services/products.service.js"
 import { io } from "../utils/socket.js"
+import { transporter } from "../config/nodemailer.js"
+import { UsersService } from "../services/views.service.js"
 
 const productsService = new ProductsService()
+const user = new UsersService()
 
 export async function getProducts(req, res) {
     try {
@@ -115,9 +118,25 @@ export async function deleteProduct(req, res) {
         const { pid } = req.params
 
         const productoDelete = await productsService.getProductByIdService(pid)
+        const creadorProduct = await user.getUserById(productoDelete.data.owner)
 
         if(req.user.role == 'Premium' && productoDelete.data.owner !== req.user._id){
             return res.status(404).json({ message: 'No se pudo eliminar el producto solicitado.', error: 'Usted no puede eliminar productos que no sean creados por usted.' })
+        } else if (creadorProduct.role == 'Premium'){
+            const mailOptions = {
+                from: `Coder test <${req.user.email}>`,
+                to: creadorProduct.email,
+                subject: 'Eliminación de un producto',
+                html: `<p>Se eliminó un producto creado por usted. </p>`
+            }
+
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    req.logger.error(`${req.method} en ${req.url} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - message: ${error}`)
+                } else {
+                    req.logger.info(`${req.method} en ${req.url} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - Correo Enviado: ${info.response}`)
+                }
+            })
         }
 
         const respuesta = await productsService.deleteProductService(pid)

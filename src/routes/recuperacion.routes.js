@@ -1,8 +1,8 @@
 import express from "express"
 import { UserManager } from "../Dao/db/managers/usersManagerDB.js"
-import nodemailer from 'nodemailer'
 import { authenticateResetContra } from "../middleware/passportMiddleware.js"
 import { generaTokenReset } from "../utils/tokenJWT.js"
+import { transporter } from "../config/nodemailer.js"
 
 //Instanciamos UserManager()
 const user = new UserManager()
@@ -25,16 +25,6 @@ routerRecuperar.get('/', (req, res) => {
 
 routerRecuperar.post('/send-reset-email', async (req, res) => {
     const email = req.body.email
-
-    //configuramos nodemailer
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        port: 587,
-        auth: {
-            user: 'mauriciofioretti@gmail.com',
-            pass: 'cijlrobybokbumqg'
-        }
-    })
 
     let respuestaEmail = await user.validateEmail(email)
 

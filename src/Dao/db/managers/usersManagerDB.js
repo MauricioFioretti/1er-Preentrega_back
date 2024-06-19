@@ -16,6 +16,7 @@ export class UserManager {
         //Hasheo de la password, creacion del carrito y el usuario
         newUser.password = createHash(newUser.password)
         newUser.cartId = uuidv4()
+        newUser.lastLogin = new Date()
         let email = newUser.email
         let firstName = newUser.firstName
 
@@ -63,6 +64,9 @@ export class UserManager {
             let busquedaPorEmail = await User.findOne({ email }).lean().exec()
 
             if (busquedaPorEmail && isValidatePassword(password, busquedaPorEmail.password)) {
+                //Actualizamos la ultima fecha de ingreso
+                await User.updateOne({ email }, { $set: { lastLogin: new Date() } })
+                
                 delete busquedaPorEmail.password //Eliminamos la password para no enviar datos sensibles al front.
                 return { success: true, message: `El usuario con email: ${email} se encontró exitosamente.`, data: busquedaPorEmail }
             } else {
@@ -145,12 +149,22 @@ export class UserManager {
                 //si no tiene email, directamente crea el email con el perfil.id y lo busca para saber si existe en la db.
                 email = profile.id + '@gmail.com'
                 userDeGithub = await User.findOne({ email }).lean().exec()
+
+                //Actualizamos la ultima fecha de ingreso
+                await User.updateOne({ email }, { $set: { lastLogin: new Date() } })
             } else {
                 userDeGithub = await User.findOne({ email }).lean().exec()
+
+                //Actualizamos la ultima fecha de ingreso
+                await User.updateOne({ email }, { $set: { lastLogin: new Date() } })
+
                 //Aca muy importante, si tiene email, puede ser que lo haya agregado recientemente en github, pero que el ya se haya registrado anteriormente en el sitio cuando no tenia email, por tanto el usuario ya existe en la db con el email generado por el sitio.
                 if (!userDeGithub) {
                     email = profile.id + '@gmail.com'
                     userDeGithub = await User.findOne({ email }).lean().exec()
+
+                    //Actualizamos la ultima fecha de ingreso
+                    await User.updateOne({ email }, { $set: { lastLogin: new Date() } })
                 }
             }
 
@@ -175,11 +189,12 @@ export class UserManager {
             let email = profile.email
             let firstName = profile.name
             let cartId = uuidv4()
+            let lastLogin = new Date()
             if (!email) { email = profile.id + '@gmail.com' }
             if (!firstName) { firstName = profile.login }
 
             //Agregamos el usuario y el carrito a la db
-            await User.create({ firstName, email, password: createHash('passwordGithub123.'), cartId })
+            await User.create({ firstName, email, password: createHash('passwordGithub123.'), cartId, lastLogin })
             await carts.addCart(cartId)
 
             return { success: true, message: `El usuario se agrego exitosamente.`, email: email }
@@ -195,6 +210,21 @@ export class UserManager {
             return await User.findById(id)
         } catch (error) {
             return 'Usuario no encontrado'
+        }
+    }
+
+    // Método para eliminar un usuario.
+    async deleteUser(id) {
+        try {
+            let resultado = await User.deleteOne({ "_id": id })
+
+            if (resultado.deletedCount === 0) {
+                throw new Error(`No se encontró el usuario a eliminar.`)
+            } else {
+                return { success: true, message: `El usuario con id ${id} ha sido eliminado correctamente de la base de datos.` }
+            }
+        } catch (error) {
+            return { success: false, message: `Error al eliminar el usuario. `, error: error }
         }
     }
 }

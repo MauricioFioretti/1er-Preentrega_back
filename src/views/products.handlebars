@@ -8,6 +8,9 @@
 {{/eq}}
 {{#eq role "Admin"}}
     <h4>Rol: Admin </h4>
+    <form action="/api/users/modify" method="get">
+    <input type="submit" class="btn btn-danger" value="Modificar Usuarios">
+</form>
 {{/eq}}
 
 <form action="/api/carts/{{cartId}}" method="get">

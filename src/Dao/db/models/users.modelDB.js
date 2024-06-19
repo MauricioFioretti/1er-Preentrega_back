@@ -30,6 +30,10 @@ const UserSchema = new mongoose.Schema(
         },
         age: {
             type: Number
+        }, 
+        lastLogin: {
+            type: String,
+            default: new Date()
         }
     },
     {
