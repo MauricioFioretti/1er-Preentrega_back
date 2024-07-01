@@ -1,11 +1,13 @@
 import { Router } from "express"
-import { getUsersController, renderRegister, renderLogin } from "../controllers/views.controller.js"
+import { ViewsController } from "../controllers/views.controller.js"
 
 const routerViews = Router()
 
+const viewsController = new ViewsController()
+
 // Rutas para obtener usuarios, registro e inicio de sesión
-routerViews.get('/getUsers', getUsersController)
-routerViews.get('/register', renderRegister)
-routerViews.get('/login', renderLogin)
+routerViews.get('/getUsers', viewsController.getUsersController)
+routerViews.get('/register', viewsController.renderRegister)
+routerViews.get('/login', viewsController.renderLogin)
 
 export default routerViews

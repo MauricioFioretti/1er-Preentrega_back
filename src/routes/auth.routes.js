@@ -1,15 +1,14 @@
 import express from "express"
-import { registerUser, failedRegister, loginUser, failedLogin, logoutUser, callbackGithub } from "../controllers/auth.controller.js"
 import { authenticateGithub, authenticateLogin, authenticateRegister } from "../middleware/passportMiddleware.js"
+import { AuthController } from "../controllers/auth.controller.js"
 
+const authController = new AuthController()
 const routerAuth = express.Router()
 
-routerAuth.post('/register', authenticateRegister, registerUser)
-routerAuth.get('/user/failedRegister', failedRegister)
-routerAuth.post('/login', authenticateLogin, loginUser)
-routerAuth.get('/user/failedlogin', failedLogin)
-routerAuth.get('/logout', logoutUser)
+routerAuth.post('/register', authenticateRegister, authController.registerUser)
+routerAuth.post('/login', authenticateLogin, authController.loginUser)
+routerAuth.get('/logout', authController.logoutUser)
 routerAuth.get('/github', authenticateGithub)
-routerAuth.get('/callbackGithub', authenticateGithub, callbackGithub)
+routerAuth.get('/callbackGithub', authenticateGithub, authController.callbackGithub)
 
 export default routerAuth

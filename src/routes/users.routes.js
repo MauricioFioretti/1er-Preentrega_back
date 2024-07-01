@@ -1,18 +1,17 @@
 import express from "express"
 import { authenticateAdmin, authenticateJWT } from "../middleware/passportMiddleware.js"
-import { deleteUser, deleteUsers, getUsers, modifyUsers, toggleUserRoleController } from "../controllers/users.controller.js"
+import { UsersController } from "../controllers/users.controller.js"
 
 const routerUser = express.Router()
 
-routerUser.get('/premium/:uid', authenticateJWT, toggleUserRoleController)
+const usersController = new UsersController()
 
-routerUser.get('/', authenticateJWT, authenticateAdmin, getUsers)
 
-routerUser.get('/modify', authenticateJWT, authenticateAdmin, modifyUsers)
-
-routerUser.get('/delete', authenticateJWT, authenticateAdmin, deleteUsers)
-
-routerUser.get('/delete/:uid/:email', authenticateJWT, authenticateAdmin, deleteUser)
+routerUser.get('/premium/:uid', authenticateJWT, usersController.toggleUserRoleController)
+routerUser.get('/', authenticateJWT, authenticateAdmin, usersController.getUsers)
+routerUser.get('/modify', authenticateJWT, authenticateAdmin, usersController.modifyUsers)
+routerUser.get('/delete', authenticateJWT, authenticateAdmin, usersController.deleteUsers)
+routerUser.get('/delete/:uid/:email', authenticateJWT, authenticateAdmin, usersController.deleteUser)
 
 export default routerUser
 
