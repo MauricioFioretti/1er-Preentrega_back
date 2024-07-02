@@ -32,4 +32,8 @@ export class ViewsController {
 
         res.render('login', { alertScript })
     }
+
+    redirec = async (req, res) => {
+        res.redirect(`/api/products`)
+    }
 }
