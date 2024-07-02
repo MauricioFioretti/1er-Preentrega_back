@@ -34,6 +34,6 @@ export class ViewsController {
     }
 
     redirec = async (req, res) => {
-        res.redirect(`/api/products`)
+        res.redirect(`/products`)
     }
 }
