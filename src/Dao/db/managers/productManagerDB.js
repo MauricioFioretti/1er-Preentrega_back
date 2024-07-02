@@ -10,6 +10,7 @@ export class ProductManager {
         try {
             let productos
 
+            //limit recibe la cantidad de productos en una pagina, por defecto es 10. page recibe la pagina en la que se quiere ubicar, por defecto es page 1. Query recibe 'disponibles' para filtrar por status = true o sino 'OMA-Nivel-2', por ejemplo, para filtrar por categoria de nivel 2, se puede no pasar nada. Y sort recibe, se puede no pasar nada.
             if (query == "disponibles") {
                 productos = await Product.paginate({ status: true }, { limit, page, sort: sort ? { price: sort } : {} })
             } else {

@@ -77,6 +77,7 @@ app.use('/loggerTest', routerLogger)
 app.use(errorHandler)
 
 app.get('*', (req, res) => {
+    res.redirect(`/login?message=${encodeURIComponent('La ruta no existe')}`)
     res.status(404).send('La ruta no existe')
 })
 

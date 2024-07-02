@@ -9,6 +9,6 @@ const viewsController = new ViewsController()
 routerViews.get('/getUsers', viewsController.getUsersController)
 routerViews.get('/register', viewsController.renderRegister)
 routerViews.get('/login', viewsController.renderLogin)
-routerViews.get('/', viewsController.redirec)
+//routerViews.get('/', viewsController.redirec)
 
 export default routerViews
