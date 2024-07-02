@@ -28,7 +28,7 @@ export class RecuperacionController {
             let token = generaTokenReset(email)
             res.cookie(process.env.SECRETCOOKIE, token, { httpOnly: true })
 
-            const resetLink = `http://localhost:${process.env.PORT}/api/recuperacion-contra/reset-password`
+            const resetLink = `https://ecommerce-venta-de-libros-oma-production.up.railway.app/api/recuperacion-contra/reset-password`
             const mailOptions = {
                 from: 'Coder test <mauriciofioretti@gmail.com>',
                 to: email,
