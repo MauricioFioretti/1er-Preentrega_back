@@ -125,6 +125,7 @@ export function initializePassport() {
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
+                console.log('Entramos en esta parte')
                 let usuario = await user.getUserByGithub(profile._json)
 
                 if (!usuario.success) { return done(usuario.message + usuario.error) }
