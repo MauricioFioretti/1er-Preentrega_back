@@ -121,7 +121,7 @@ export function initializePassport() {
         {
             clientID: 'Iv1.bf8a429adc9c6c90',
             clientSecret: 'c067c1ead258f50fea2e3f4c55be5f294c013bca',
-            callbackURL: 'http://localhost:8080/auth/callbackGithub'
+            callbackURL: 'https://ecommerce-venta-de-libros-oma-production.up.railway.app/auth/callbackGithub'
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
