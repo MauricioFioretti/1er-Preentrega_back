@@ -45,7 +45,8 @@ export class RecuperacionController {
                 res.render('send-email')
             })
         } else {
-            return req.logger.error(`${req.method} en ${req.url} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - message: ${respuestaEmail.message} - error: ${respuestaEmail.error}`)
+            req.logger.error(`${req.method} en ${req.url} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - message: ${respuestaEmail.message} - error: ${respuestaEmail.error}`)
+            return res.redirect(`/login?message=${encodeURIComponent('El email no existe.')}`)
         }
     }
 
