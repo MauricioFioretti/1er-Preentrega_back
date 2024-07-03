@@ -44,6 +44,7 @@ export class UserManager {
                 message: 'Error tratando de crear el usuario',
                 code: EErrors.DATABASE_ERROR
             })
+            return { success: false, message: `El email ${newUser.email} ya existe.` }
         }
     }
 

@@ -19,6 +19,7 @@ export function initializePassport() {
                 let respuestaAddUser = await user.addUser(newUser)
 
                 if (!respuestaAddUser.success) {
+                    res.redirect(`/login?message=${encodeURIComponent(respuestaAddUser.message)}`)
                     return done(respuestaAddUser.message + respuestaAddUser.error)
                 }
 
