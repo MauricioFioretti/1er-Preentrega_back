@@ -19,7 +19,6 @@ export function initializePassport() {
                 let respuestaAddUser = await user.addUser(newUser)
 
                 if (!respuestaAddUser.success) {
-                    res.redirect(`/login?message=${encodeURIComponent(respuestaAddUser.message)}`)
                     return done(respuestaAddUser.message + respuestaAddUser.error)
                 }
 
@@ -122,7 +121,7 @@ export function initializePassport() {
         {
             clientID: 'Iv1.bf8a429adc9c6c90',
             clientSecret: 'c067c1ead258f50fea2e3f4c55be5f294c013bca',
-            callbackURL: 'https://ecommerce-venta-de-libros-oma-production.up.railway.app/auth/callbackGithub'
+            callbackURL: `${process.env.HOST}/auth/callbackGithub`
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
