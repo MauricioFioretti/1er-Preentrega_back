@@ -7,9 +7,9 @@
 body {
   margin: 1rem;
   background-color: antiquewhite;
-  padding-top: 30px;
 }
 body .navbar {
+  padding-top: 30px;
   position: fixed;
   top: 0;
   left: 0;
@@ -27,8 +27,8 @@ body .navbar {
 body .navbar .btnCart {
   order: 1;
 }
-body h1 {
-  margin-top: 20px;
+body .titleProducts {
+  margin-top: 4rem;
 }
 body .pagination {
   margin: 20px 0;
@@ -40,6 +40,8 @@ body .products {
   padding-top: 30px;
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 }
 body .products .card {
   margin: 10px;
@@ -78,4 +80,47 @@ body .chatContainer main .chatMessage {
 body .chatContainer footer {
   height: 10vh;
   padding: 15px;
+}
+@media (max-width: 768px) {
+  body .titleProducts {
+    margin-top: 4rem;
+  }
+  body .products {
+    flex-direction: column;
+    align-items: center;
+  }
+  body .productsRealTime {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+@media (max-width: 477px) {
+  body .titleProducts {
+    margin-top: 6.5rem;
+    text-align: center;
+  }
+  body .pagination {
+    margin-bottom: 0;
+  }
+  body .products .card, body .productsRealTime .card {
+    width: 100%;
+    margin: 5px 0;
+  }
+}
+@media (max-width: 200px) {
+  body .navbar {
+    padding: 5px;
+    gap: 5px;
+  }
+  body .titleProducts {
+    margin-top: 6rem;
+    text-align: center;
+  }
+  body .pagination {
+    margin-bottom: 0;
+  }
+  body .products .card, body .productsRealTime .card {
+    width: 100%;
+    margin: 5px 0;
+  }
 }
