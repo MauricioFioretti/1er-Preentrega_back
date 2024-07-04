@@ -28,7 +28,7 @@ export function cantidadStock(productos, cid) {
     let productosStock = { conStock: [], sinStock: [] }
 
     productos.forEach(async (element) => {
-        if (element.product.stock > element.quantity) {
+        if (element.product.stock >= element.quantity) {
             //Agrega los productos que tienen stock a un objeto para luego procesar el ticket
             productosStock.conStock.push(element)
 
@@ -37,6 +37,11 @@ export function cantidadStock(productos, cid) {
 
             //Actualizamos el stock en la db 
             let newStock = element.product.stock - element.quantity
+
+            //Si el stock queda en 0, actualizamos el status
+            if(newStock === 0){
+                await productsService.updateProductService(element.product._id, { stock: newStock, status: false })
+            }
             await productsService.updateProductService(element.product._id, { stock: newStock })
 
             //Eliminar los productos del carrito del usuario 

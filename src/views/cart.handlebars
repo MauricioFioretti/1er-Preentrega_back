@@ -10,6 +10,7 @@
             <p class="card-price">Precio por unidad: ${{this.product.price}}</p>
             <p class="card-category">Cantidad: {{this.quantity}}</p>
             <p class="card-price">Precio total: ${{this.priceTot}}</p>
+            <button type="button" class="btn btn-danger" onclick="deleteProduct('{{this.product._id}}', '{{../cartId}}')">Eliminar producto</button>
         </div>
     </div>
     {{/each}}
@@ -23,3 +24,17 @@
         <input type="submit" class="btn btn-success" value="Seguir comprando">
     </form>
 </div>
+
+<script>
+    function deleteProduct(productId, cartId) {
+        // Realizar la solicitud POST al endpoint del carrito.
+        let url = `/api/carts/${cartId}/products/${productId}`
+        fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({}),
+        })
+    }
+</script>

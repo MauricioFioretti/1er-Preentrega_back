@@ -112,9 +112,12 @@ export class CartsController {
     
     deleteProductFromCart = async (req, res) => {
         try {
+            console.log('holaaaas')
+
             const cid = req.params.cid
             const pid = req.params.pid
             const deleteToCart = await cartsService.deleteProductFromCart(cid, pid)
+
             if (deleteToCart.success) {
                 res.status(200).json({ message: deleteToCart.message, data: deleteToCart.data })
             } else {
