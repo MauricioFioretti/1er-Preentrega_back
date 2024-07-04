@@ -12,7 +12,7 @@ export function generaTokenReset(usuario) {
     return jwt.sign(
         { email: usuario },
         process.env.SECRETJWT,
-        { expiresIn: '1m' }
+        { expiresIn: '1h' }
     )
 }
 

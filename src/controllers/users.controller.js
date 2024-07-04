@@ -71,7 +71,7 @@ export class UsersController {
                 let hoursDifference = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
                 let minutesDifference = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60))
 
-                if (daysDifference >= 2 && element.role !== 'Admin') {
+                if (minutesDifference >= 2 && element.role !== 'Admin') {
                     usersDelete.push(element)
                     await user.deleteUser(element._id)
 
