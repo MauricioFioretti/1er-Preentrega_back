@@ -77,11 +77,11 @@ app.use('/loggerTest', routerLogger)
 app.use(errorHandler)
 
 app.get('*', (req, res) => {
-    res.redirect(`/login?message=${encodeURIComponent('La ruta no existe')}`)
+    res.redirect(`/products?message=${encodeURIComponent('La ruta no existe')}`)
 })
 
 // Iniciar el servidor en el puerto 8080
 server.listen(process.env.PORT, () => {
-    console.log(`Servidor escuchando en el puerto http://${process.env.HOST}:${process.env.PORT}`)
+    console.log(`Servidor escuchando en el puerto http://${process.env.HOST}`)
     MongoSingleton.getInstance()
 })

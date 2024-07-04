@@ -1,0 +1,18 @@
+<h1>Perfil</h1>
+
+<div class="products">
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">{{this.firstName}}</h5>
+            <p class="card-text">Email: {{this.email}}</p>
+            <p class="card-category">Cart ID: {{this.cartId}}</p>
+            <p class="card-price">Rol: {{this.role}}</p>
+        </div>
+    </div>    
+</div>
+
+<div>
+    <form action="/products" method="get">
+        <input type="submit" class="btn btn-success" value="Volver">
+    </form>
+</div>

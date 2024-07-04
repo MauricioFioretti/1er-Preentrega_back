@@ -37,6 +37,7 @@ export class UserManager {
             await User.create(newUser)
             return { success: true, message: `El usuario ${newUser.user} ha sido agregado correctamente` }
         } else {
+            return { success: false, message: `El email ${newUser.email} ya existe.` }
             //Custom error
             CustomError.createError({
                 name: 'User creation Error',
@@ -44,7 +45,7 @@ export class UserManager {
                 message: 'Error tratando de crear el usuario',
                 code: EErrors.DATABASE_ERROR
             })
-            return { success: false, message: `El email ${newUser.email} ya existe.` }
+            
         }
     }
 

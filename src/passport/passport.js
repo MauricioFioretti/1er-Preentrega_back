@@ -19,7 +19,7 @@ export function initializePassport() {
                 let respuestaAddUser = await user.addUser(newUser)
 
                 if (!respuestaAddUser.success) {
-                    return done(respuestaAddUser.message + respuestaAddUser.error)
+                    return done(respuestaAddUser.message)
                 }
 
                 return done(null, respuestaAddUser.message)

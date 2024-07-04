@@ -12,6 +12,7 @@ export class UsersController {
             let uid = req.params.uid
 
             let usuarioCambiarRol = await user.updateUser(uid)
+            req.user.role = usuarioCambiarRol.role
 
             res.clearCookie(process.env.SECRETCOOKIE)
             let token = generaToken({ firstName: req.user.firstName, lastName: req.user.lastName, email: req.user.email, cartId: req.user.cartId, role: req.user.role, _id: req.user._id })

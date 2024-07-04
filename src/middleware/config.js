@@ -9,6 +9,9 @@ export const codigo = (strategy, req, res, next, pagina) => {
                 return res.redirect(pagina)
             }
         }
+        if(err){
+            return res.redirect(`/login?message=${encodeURIComponent(err)}`)
+        }
         if (!user) {
             return res.redirect(pagina)
         }

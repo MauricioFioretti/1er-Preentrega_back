@@ -1,16 +1,17 @@
 import passport from "passport"
 import { codigo } from "./config.js"
 
-// export const authenticateRegister = passport.authenticate('register', { session: false })
 // Middleware para autenticación con register
 export const authenticateRegister = (req, res, next) => {
     codigo('register', req, res, next, `/login?message=${encodeURIComponent('Inicie sesión.')}`)
 }
 
+// Middleware para autenticación con login
 export const authenticateLogin = (req, res, next) => {
     codigo('login', req, res, next, `/login?message=${encodeURIComponent('El usuario o contraseña son incorrectos.')}`)
 }
 
+// Middleware para autenticación de resetContra
 export const authenticateResetContra = (req, res, next) => {
     codigo('resetContra', req, res, next, `/api/recuperacion-contra?message=${encodeURIComponent('Contraseña no válida o el token expiró.')}`)
 }  
