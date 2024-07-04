@@ -3,9 +3,13 @@
         <input type="submit" class="btn btn-success" value="Ver Perfil">
     </form>
 
-    <form action="/api/users/premium/{{userId}}" method="get">
+    {{!-- <form action="/api/users/premium/{{userId}}" method="get">
         <input type="submit" class="btn btn-success" value="Cambiar user/premium">
-    </form>
+    </form> --}}
+
+    <button type="button" class="btn btn-success" onclick="userPremium('{{userId}}')">
+        Cambiar user/premium
+    </button>
 
     <form action="../auth/logout" method="get">
         <input type="submit" class="btn btn-danger" value="Logout">
@@ -96,6 +100,22 @@
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({}),
+        })
+    }
+
+    function userPremium(userId) {
+        let url = `/api/users/premium/${userId}`
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }).then(response => {
+            if (response.ok) {
+                location.reload()
+            } else {
+                alert('Error cambiar el rol')
+            }
         })
     }
 </script>

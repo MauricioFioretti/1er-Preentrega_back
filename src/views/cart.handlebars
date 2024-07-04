@@ -35,6 +35,12 @@
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({}),
+        }).then(response => {
+            if (response.ok) {
+                location.reload()
+            } else {
+                alert('Error al eliminar el producto')
+            }
         })
     }
 </script>
