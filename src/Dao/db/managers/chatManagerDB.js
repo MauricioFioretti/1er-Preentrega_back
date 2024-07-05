@@ -18,6 +18,10 @@ export class ChatManager {
     async getChat(id) {
         try {
             let chat = await Chat.findOne({ id: id }).populate("messages.message")
+            if(!chat){
+                await Chat.create({ id })
+                chat = await Chat.findOne({ id: id }).populate("messages.message")
+            }
             return { success: true, message: `Chat obtenido correctamente`, data: chat }
 
         } catch (error) {

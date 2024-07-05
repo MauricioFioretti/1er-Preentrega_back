@@ -21,11 +21,11 @@ export const authenticateJWT = (req, res, next) => {
     codigo('jwt', req, res, next, `/login?message=${encodeURIComponent('Inicie sesión.')}`)
 }
 
-export const authenticateUser = passport.authenticate('user', { session: false })
+// export const authenticateUser = passport.authenticate('user', { session: false })
 // Middleware para autenticación de User
-// export const authenticateUser = (req, res, next) => {
-//     codigo('user', req, res, next, `/login?message=${encodeURIComponent('Inicie sesión.')}`)
-// }
+export const authenticateUser = (req, res, next) => {
+    codigo('user', req, res, next, `/login?message=${encodeURIComponent('Inicie sesión.')}`)
+}
 
 export const authenticateGithub = passport.authenticate('github', { session: false })
 // Middleware para autenticación con github
