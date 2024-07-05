@@ -12,11 +12,14 @@ export class UsersController {
             let uid = req.params.uid
 
             let usuarioCambiarRol = await user.updateUser(uid)
-            req.user.role = usuarioCambiarRol.role
 
-            res.clearCookie(process.env.SECRETCOOKIE)
-            let token = generaToken({ firstName: req.user.firstName, lastName: req.user.lastName, email: req.user.email, cartId: req.user.cartId, role: req.user.role, _id: req.user._id })
-            res.cookie(process.env.SECRETCOOKIE, token, { httpOnly: true })
+            if (req.user.role !== 'Admin') {
+                req.user.role = usuarioCambiarRol.role
+
+                res.clearCookie(process.env.SECRETCOOKIE)
+                let token = generaToken({ firstName: req.user.firstName, lastName: req.user.lastName, email: req.user.email, cartId: req.user.cartId, role: req.user.role, _id: req.user._id })
+                res.cookie(process.env.SECRETCOOKIE, token, { httpOnly: true })
+            }
 
             res.status(200).json(usuarioCambiarRol)
         } catch (error) {
@@ -71,7 +74,7 @@ export class UsersController {
                 let hoursDifference = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
                 let minutesDifference = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60))
 
-                if (minutesDifference >= 2 && element.role !== 'Admin') {
+                if (daysDifference >= 2 && element.role !== 'Admin') {
                     usersDelete.push(element)
                     await user.deleteUser(element._id)
 
@@ -128,8 +131,8 @@ export class UsersController {
                     req.logger.info(`${req.method} en ${req.url} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - Correo Enviado: ${info.response}`)
                 }
             })
-
-            return res.redirect(`/api/users/modify`)
+            res.status(200).json(email)
+            // return res.redirect(`/api/users/modify`)
         }
 
         catch (error) {

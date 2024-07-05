@@ -6,14 +6,14 @@
             <p class="card-price">Email: {{this.email}}</p>
             <p class="card-category">
                 Rol: {{this.role}}
-                <form action='/api/users/premium/{{this.id}}' method="get">
-                    <input type="submit" class="btn btn-primary" value="Cambiar rol">
-                </form>
+                <button type="button" class="btn btn-success" onclick="userPremium('{{this.id}}')">
+                    Cambiar rol
+                </button>
             </p>
             <div>
-                <form action='/api/users/delete/{{this.id}}/{{this.email}}' method="get">
-                    <input type="submit" class="btn btn-danger" value="Eliminar usuario">
-                </form>
+                <button type="button" class="btn btn-danger" onclick="deleteUser('{{this.id}}', '{{this.email}}')">
+                    Eliminar usuario
+                </button>
             </div>
         </div>
     </div>
@@ -26,18 +26,39 @@
     </form>
 </div>
 
-
 <script>
-    function premium(id) {
-        // Realizar la solicitud GET al endpoint del carrito.
-        let url = `/api/users/premium/${id}`
-        console.log(url)
+    function userPremium(userId) {
+        let url = `/api/users/premium/${userId}`
         fetch(url, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({}),
+            }
+        }).then(response => {
+            if (response.ok) {
+                location.reload()
+            } else {
+                alert('Error al cambiar el rol')
+            }
+        })
+    }
+
+    function deleteUser(uid, email) {
+        let url = `/api/users/delete/${uid}/${email}`
+        fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        }).then(response => {
+            if (response.ok) {
+                location.reload()
+            } 
+            else {
+                alert('Error al eliminar usuario')
+            }
         })
     }
 </script>
+
+

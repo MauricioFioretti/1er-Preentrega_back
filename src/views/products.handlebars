@@ -3,10 +3,6 @@
         <input type="submit" class="btn btn-success" value="Ver Perfil">
     </form>
 
-    {{!-- <form action="/api/users/premium/{{userId}}" method="get">
-        <input type="submit" class="btn btn-success" value="Cambiar user/premium">
-    </form> --}}
-
     <button type="button" class="btn btn-success" onclick="userPremium('{{userId}}')">
         Cambiar user/premium
     </button>
@@ -114,7 +110,7 @@
             if (response.ok) {
                 location.reload()
             } else {
-                alert('Error cambiar el rol')
+                alert('Error al cambiar el rol')
             }
         })
     }
