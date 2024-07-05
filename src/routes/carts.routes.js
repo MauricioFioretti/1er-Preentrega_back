@@ -7,7 +7,6 @@ const routerCart = express.Router()
 const cartsController = new CartsController()
 
 //Carrito
-routerCart.post('/', authenticateJWT, authenticateUser, cartsController.addCart)
 routerCart.get('/:cid', authenticateJWT, cartsController.getCart)
 routerCart.post('/:cid/products/:pid', authenticateJWT, authenticateUser, cartsController.addProductToCart)
 routerCart.put('/:cid', authenticateJWT, cartsController.updateCart)

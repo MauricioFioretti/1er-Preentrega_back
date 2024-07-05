@@ -4,24 +4,7 @@ const cartsService = new CartsService()
 const productsService = new ProductsService()
 
 
-export class CartsController {
-    addCart = async (req, res) => {
-        try {
-            const cart = await cartsService.addCart()
-            if (cart.success) {
-                res.status(201).json({ message: cart.message, data: cart.data })
-            } else {
-                req.logger.warning(`No se pudo añadir el carrito - Motivo: ${cart.error} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`)
-    
-                res.status(500).json({ message: cart.message, error: cart.error })
-            }
-        } catch (error) {
-            req.logger.error(`${req.method} ${req.url} - at ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} - Error interno del servidor - Error: ${error.message}`)
-    
-            res.status(500).json({ message: "Error interno del servidor", error: error })
-        }
-    }
-    
+export class CartsController {    
     getCart = async (req, res) => {
         try {
             const id = req.params.cid

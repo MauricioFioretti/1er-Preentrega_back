@@ -5,6 +5,7 @@ export class CartsManager {
     // Método para añadir un carrito nuevo a la db.
     async addCart(cartId) {
         try {
+            console.log(cartId)
             let carrito = await Cart.create({ cartId })
             return { success: true, message: `Carrito agregado correctamente`, data: carrito }
         }

@@ -3,10 +3,6 @@ import { cartServiceDTO } from "./dto/carts.service.dto.js"
 const cartsManager = new CartsManager()
 
 export class CartsService {
-    async addCart() {
-        return await cartsManager.addCart()
-    }
-
     async getCart(id) {
         let carrito = await cartsManager.getCart(id)
         return cartServiceDTO(carrito)
