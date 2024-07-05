@@ -39,11 +39,11 @@ export const authenticateAdmin = (req, res, next) => {
     codigo('admin', req, res, next, `/login?message=${encodeURIComponent('Inicie sesión.')}`)
 }
 
-export const authenticateAdminPremium = passport.authenticate('admin-premium', { session: false })
+// export const authenticateAdminPremium = passport.authenticate('admin-premium', { session: false })
 // Middleware para autenticación de Admin-Premium
-// export const authenticateAdminPremium = (req, res, next) => {
-//     codigo('admin-premium', req, res, next, `/login?message=${encodeURIComponent('Inicie sesión.')}`)
-// }
+export const authenticateAdminPremium = (req, res, next) => {
+    codigo('admin-premium', req, res, next, `/login?message=${encodeURIComponent('No autorizado.')}`)
+}
 
 
 

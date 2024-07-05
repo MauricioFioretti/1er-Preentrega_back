@@ -108,7 +108,7 @@ export function initializePassport() {
     }, async (jwt_payload, done) => {
         try {
             if (jwt_payload.role != 'Admin' && jwt_payload.role != 'Premium'){
-                throw new Error('Usted no esta autorizado ya que no tiene una sesión activa como Administrador o Premium.')
+                return done('Usted no esta autorizado ya que no tiene una sesión activa como Administrador o Premium.')
             }
             return done(null, jwt_payload)
         } catch (error) {
